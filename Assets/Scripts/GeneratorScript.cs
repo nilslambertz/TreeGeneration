@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public string = "Nils stinkt";
+
 public class GeneratorScript : MonoBehaviour
 {
     /* Parameter */
