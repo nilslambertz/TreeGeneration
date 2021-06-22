@@ -2,14 +2,15 @@
 
 public class ConeGenerator : MonoBehaviour
 {
-
 	private Vector3[] vertices;
 	private int[] triangles;
 
 	private float bottomRadius = 10;
 	private float topRadius = 5;
 	private float height = 20;
-	private int numberOfSides = 62;
+	private int numberOfSides = 10;
+	
+	private const float doublePi = Mathf.PI * 2f;
 
 	public void Start()
 	{
@@ -20,36 +21,37 @@ public class ConeGenerator : MonoBehaviour
 		Mesh mesh = filter.mesh;
 		mesh.Clear();
 
-		int nbVerticesCap = numberOfSides + 1;
+		var nbVerticesCap = numberOfSides + 1;
 
 		// bottom + top + sides
 		vertices = new Vector3[(numberOfSides + 1) * 4];
-		int vert = 0;
-		float _2pi = Mathf.PI * 2f;
+		var vert = 0;
 
 		// Bottom cap
 		vertices[vert++] = new Vector3(0f, 0f, 0f);
+		print(vert);
 		while (vert <= numberOfSides)
 		{
-			float rad = (float) vert / numberOfSides * _2pi;
+			var rad = (float) vert / numberOfSides * doublePi;
 			vertices[vert] = new Vector3(Mathf.Cos(rad) * bottomRadius, 0f, Mathf.Sin(rad) * bottomRadius);
 			vert++;
 		}
+		print(vert);
 
 		// Top cap
 		vertices[vert++] = new Vector3(0f, height, 0f);
 		while (vert <= numberOfSides * 2 + 1)
 		{
-			float rad = (float) (vert - numberOfSides - 1) / numberOfSides * _2pi;
+			float rad = (float) (vert - numberOfSides - 1) / numberOfSides * doublePi;
 			vertices[vert] = new Vector3(Mathf.Cos(rad) * topRadius, height, Mathf.Sin(rad) * topRadius);
 			vert++;
 		}
 
 		// Sides
-		int v = 0;
+		var v = 0;
 		while (vert <= vertices.Length - 4)
 		{
-			float rad = (float) v / numberOfSides * _2pi;
+			float rad = (float) v / numberOfSides * doublePi;
 			vertices[vert] = new Vector3(Mathf.Cos(rad) * topRadius, height, Mathf.Sin(rad) * topRadius);
 			vertices[vert + 1] = new Vector3(Mathf.Cos(rad) * bottomRadius, 0, Mathf.Sin(rad) * bottomRadius);
 			vert += 2;
@@ -81,7 +83,7 @@ public class ConeGenerator : MonoBehaviour
 		v = 0;
 		while (vert <= vertices.Length - 4)
 		{
-			float rad = (float) v / numberOfSides * _2pi;
+			float rad = (float) v / numberOfSides * doublePi;
 			float cos = Mathf.Cos(rad);
 			float sin = Mathf.Sin(rad);
 
@@ -102,7 +104,7 @@ public class ConeGenerator : MonoBehaviour
 		uvs[u++] = new Vector2(0.5f, 0.5f);
 		while (u <= numberOfSides)
 		{
-			float rad = (float) u / numberOfSides * _2pi;
+			float rad = (float) u / numberOfSides * doublePi;
 			uvs[u] = new Vector2(Mathf.Cos(rad) * .5f + .5f, Mathf.Sin(rad) * .5f + .5f);
 			u++;
 		}
@@ -111,7 +113,7 @@ public class ConeGenerator : MonoBehaviour
 		uvs[u++] = new Vector2(0.5f, 0.5f);
 		while (u <= numberOfSides * 2 + 1)
 		{
-			float rad = (float) u / numberOfSides * _2pi;
+			float rad = (float) u / numberOfSides * doublePi;
 			uvs[u] = new Vector2(Mathf.Cos(rad) * .5f + .5f, Mathf.Sin(rad) * .5f + .5f);
 			u++;
 		}
