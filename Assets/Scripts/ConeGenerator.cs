@@ -21,6 +21,8 @@ public class ConeGenerator : MonoBehaviour
 		Mesh mesh = filter.mesh;
 		mesh.Clear();
 
+		/* Vertices */
+		
 		var nbVerticesCap = numberOfSides + 1;
 
 		// bottom + top + sides
