@@ -8,7 +8,7 @@ public class ConeGenerator : MonoBehaviour
 	private float bottomRadius = 10;
 	private float topRadius = 5;
 	private float height = 20;
-	private int numberOfSides = 10;
+	private int numberOfSides = 50;
 	
 	private const float doublePi = Mathf.PI * 2f;
 
@@ -36,12 +36,11 @@ public class ConeGenerator : MonoBehaviour
 		}
 
 		// Top cap
-		vertices[vert++] = new Vector3(0f, height, 0f);
-		while (vert <= numberOfSides * 2 + 1)
+		vertices[vert] = new Vector3(0f, height, 0f);
+		while (++vert <= numberOfSides * 2 + 1)
 		{
 			float rad = (float) (vert - numberOfSides - 1) / numberOfSides * doublePi;
 			vertices[vert] = new Vector3(Mathf.Cos(rad) * topRadius, height, Mathf.Sin(rad) * topRadius);
-			vert++;
 		}
 
 		// Sides
