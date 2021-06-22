@@ -64,11 +64,21 @@ public class GeneratorScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        this.GetComponent<ConeGenerator>().getCone(5, 3, 10, Vector3.zero, Quaternion.identity);
-      //  var second =this.GetComponent<ConeGenerator>().getCone();
+        startWeber();
 
 
      //   Instantiate(first, new Vector3(0,5,0), Quaternion.identity);
+    }
+
+    private void startWeber()
+    {
+        float bottomRadius = (float) (length[0] * ratio * (zeroScale + zeroScaleV));
+        print(bottomRadius);
+        float topRadius = (float) (bottomRadius * (1 - ((taper[0] <= 1 && taper[0] >= 0) ? taper[0] : 0)));
+        print(topRadius);
+        float baseLength = (float) ((scale + scaleV) * (length[0] + lengthV[0]));
+        print(baseLength);
+        this.GetComponent<ConeGenerator>().getCone(bottomRadius, topRadius, baseLength, Vector3.zero, Quaternion.identity);
     }
 
     // Update is called once per frame

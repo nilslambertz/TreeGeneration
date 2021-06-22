@@ -4,7 +4,7 @@ public class ConeGenerator : MonoBehaviour
 {
 	private Vector3[] vertices;
 	private int[] triangles;
-	private int numberOfSides = 50;
+	private int numberOfSides = 50; 
 	
 	private const float doublePi = Mathf.PI * 2f;
 
