@@ -4,16 +4,14 @@ public class ConeGenerator : MonoBehaviour
 {
 	private Vector3[] vertices;
 	private int[] triangles;
-
-	private float bottomRadius = 10;
-	private float topRadius = 5;
-	private float height = 20;
 	private int numberOfSides = 50;
 	
 	private const float doublePi = Mathf.PI * 2f;
 
-	public void Start()
+	public GameObject getCone(float bottomRadius, float topRadius, float height, Vector3 position, Quaternion rotation)
 	{
+		GameObject gameObject =  new GameObject();
+		
 		MeshRenderer meshRenderer = gameObject.AddComponent<MeshRenderer>();
 		meshRenderer.sharedMaterial = new Material(Shader.Find("Standard"));
 
@@ -196,5 +194,7 @@ public class ConeGenerator : MonoBehaviour
 		mesh.Optimize();
 		
 		filter.mesh = mesh;
+
+		return gameObject;
 	}
 }

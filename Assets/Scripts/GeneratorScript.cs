@@ -64,6 +64,11 @@ public class GeneratorScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.GetComponent<ConeGenerator>().getCone(5, 3, 10, Vector3.zero, Quaternion.identity);
+      //  var second =this.GetComponent<ConeGenerator>().getCone();
+
+
+     //   Instantiate(first, new Vector3(0,5,0), Quaternion.identity);
     }
 
     // Update is called once per frame
