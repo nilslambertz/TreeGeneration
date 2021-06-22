@@ -29,14 +29,11 @@ public class ConeGenerator : MonoBehaviour
 
 		// Bottom cap
 		vertices[vert++] = new Vector3(0f, 0f, 0f);
-		print(vert);
-		while (vert <= numberOfSides)
+		while (++vert <= numberOfSides)
 		{
 			var rad = (float) vert / numberOfSides * doublePi;
 			vertices[vert] = new Vector3(Mathf.Cos(rad) * bottomRadius, 0f, Mathf.Sin(rad) * bottomRadius);
-			vert++;
 		}
-		print(vert);
 
 		// Top cap
 		vertices[vert++] = new Vector3(0f, height, 0f);
