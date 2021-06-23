@@ -195,6 +195,9 @@ public class ConeGenerator : MonoBehaviour
 		
 		filter.mesh = mesh;
 
+		gameObject.transform.position = position;
+		gameObject.transform.rotation = rotation;
+
 		return gameObject;
 	}
 }
