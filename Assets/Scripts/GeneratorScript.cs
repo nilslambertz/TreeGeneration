@@ -68,7 +68,7 @@ public class GeneratorScript : MonoBehaviour
      
      this.GetComponent<ConeGenerator>().getCone(2, 1, 30, Vector3.zero, Quaternion.identity);
      
-     var x = this.GetComponent<ConeGenerator>().getCone(1, 0.5f, 10, new Vector3(0, 10, 0), Quaternion.Euler(new Vector3(0, 0, 30)));
+     var x = this.GetComponent<ConeGenerator>().getCone(1, 0.5f, 10, new Vector3(10, 10, 0), Quaternion.Euler(new Vector3(0, 0, 30)));
      var y = this.GetComponent<ConeGenerator>().getCone(0.8f, 0.2f, 10, new Vector3(0, 15, 0), Quaternion.Euler(new Vector3(0, 0, -30)));
 
      //  Instantiate(x, Vector3.zero, Quaternion.Euler(new Vector3(0, 0, -90)));
