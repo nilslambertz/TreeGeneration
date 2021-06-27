@@ -242,6 +242,18 @@
             return nCurve[currentPreset];
         }
         
+        private static float[][] nCurveBack = {
+            new[] {0f, 0f, 0f, 0f},
+            new[] {0f, 0f, 0f, 0f},
+            new[] {20f, 80f, 0f, 0f},
+            new[] {0f, -70f, 0f, 0f}
+        };
+        
+        public static float[] getNCurveBack()
+        {
+            return nCurveBack[currentPreset];
+        }
+        
         private static float[][] nCurveV = {
             new[] {20f, 50f, 75f, 0f},
             new[] {40f, 90f, 150f, 0f},
