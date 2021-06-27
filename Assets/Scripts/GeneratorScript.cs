@@ -1,69 +1,72 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 
 public class GeneratorScript : MonoBehaviour
 {
     /* Parameter */
-    private int shape = 7; // Shape-ID
-    private double baseSize = 0.4; // Länge des Stamms bis zum ersten Ast
+    private int shape; // Shape-ID
+    private float baseSize; // Länge des Stamms bis zum ersten Ast
     
     // Größen und Skalierungen des Baums
-    private double scale = 13;
-    private double scaleV = 3;
-    private double zScale = 1;
-    private double zScaleV = 0;
+    private float scale;
+    private float scaleV;
+    private float zScale;
+    private float zScaleV;
 
-    private int levels = 3; // Rekursionstiefe
-    private double ratio = 0.015; // Normalisierter Radius
-    private double ratioPower = 1.2; // Radius-Proportionen am Anfang eines Asts
+    private int levels; // Rekursionstiefe
+    private float ratio; // Normalisierter Radius
+    private float ratioPower; // Radius-Proportionen am Anfang eines Asts
 
     // ??
-    private int lobes = 5;
-    private double lobeDepth = 0.07;
+    private int lobes;
+    private float lobeDepth;
 
-    private double flare = 0.6; // Exponentielle Expansion vom Stamm aus
+    private float flare; // Exponentielle Expansion vom Stamm aus
     
     // Shared values
-    private double[] downAngle = new double[]{0, 60, 45, 45};
-    private double[] downAngleV = new double[]{0, -50, 10, 10};
-    private double[] length = new double[] {1, 0.3, 0.6, 0};
-    private double[] lengthV = new double[] {0, 0, 0, 0};
-    private double[] taper = new double[] {1, 1, 1, 1};
-    private double[] segSplits = new double[] {0, 0, 0, 0};
-    private double[] splitAngle = new double[] {0, 0, 0, 0};
-    private double[] splitAngleV = new double[] {0, 0, 0, 0};
-    private double[] curveRes = new double[] {3, 5, 3, 1};
-    private double[] curve = new double[] {0, -40, -40, 0};
-    private double[] curveBack = new double[] {0, 0, 0, 0};
-    private double[] curveV = new double[] {20, 50, 75, 0};
-    private double[] rotate = new double[] {0, 140, 140, 77};
-    private double[] rotateV = new double[] {0, 0, 0, 0};
-    private double[] branches = new double[] {0, 50, 30, 10};
+    private float[] downAngle;
+    private float[] downAngleV;
+    private float[] length;
+    private float[] lengthV;
+    private float[] taper;
+    private float[] segSplits;
+    private float[] splitAngle;
+    private float[] splitAngleV;
+    private float[] curveRes;
+    private float[] curve;
+    private float[] curveBack;
+    private float[] curveV;
+    private float[] rotate;
+    private float[] rotateV;
+    private float[] branches;
     
     // 0...-Werte
-    private double zeroScale = 1;
-    private double zeroScaleV = 0;
-    private double zeroBaseSplits = 0;
+    private float zeroScale;
+    private float zeroScaleV;
+    private float zeroBaseSplits;
 
     // Blätter
-    private double leaves = 25;
-    private double leafShape = 0;
-    private double leafScale = 0.17;
-    private double leafScaleX = 1;
+    private float leaves;
+    private float leafShape;
+    private float leafScale;
+    private float leafScaleX;
     
-    private double attractionUp = 0.5;
+    private float attractionUp;
     
     // Pruning
-    private double pruneRatio = 0;
-    private double pruneWidth = 0.5;
-    private double pruneWidthPeak = 0.5;
-    private double prunePowerLow = 0.5;
-    private double prunePowerHigh = 0.5;
+    private float pruneRatio;
+    private float pruneWidth;
+    private float pruneWidthPeak;
+    private float prunePowerLow;
+    private float prunePowerHigh;
 
     // Start is called before the first frame update
     void Start()
     {
+        setPresetValues();
+        
         startWeber();
      
      this.GetComponent<ConeGenerator>().getCone(2, 1, 30, Vector3.zero, Quaternion.identity);
@@ -86,6 +89,48 @@ public class GeneratorScript : MonoBehaviour
         float baseLength = (float) ((scale + scaleV) * (length[0] + lengthV[0]));
         print(baseLength);
         this.GetComponent<ConeGenerator>().getCone(bottomRadius, topRadius, baseLength, Vector3.zero, Quaternion.identity);
+    }
+
+    private void setPresetValues()
+    {
+        shape = PresetParameters.getShape();
+        baseSize = PresetParameters.getBaseSize();
+        
+        scale = PresetParameters.getScale()[0];
+        scaleV = PresetParameters.getScaleV()[0];
+        zScale = PresetParameters.getZScale();
+        zScaleV = PresetParameters.getZScaleV();
+
+        levels = PresetParameters.getLevels();
+        ratio = PresetParameters.getRatio();
+        ratioPower = PresetParameters.getRatioPower();
+
+        lobes = PresetParameters.getLobes();
+        lobeDepth = PresetParameters.getLobeDepth();
+        flare = PresetParameters.getFlare();
+
+        zeroScale = PresetParameters.getScale()[1];
+        zeroScaleV = PresetParameters.getScaleV()[1];
+
+        length = PresetParameters.getNLength();
+        lengthV = PresetParameters.getNLengthV();
+        taper = PresetParameters.getNTaper();
+        zeroBaseSplits = PresetParameters.getBaseSplits();
+
+        segSplits = PresetParameters.getNSegSplits();
+        splitAngle = PresetParameters.getNSplitAngle();
+        splitAngleV = PresetParameters.getNSplitAngleV();
+
+        curveRes = PresetParameters.getNCurveRes();
+        curve = PresetParameters.getNCurve();
+        curveBack = PresetParameters.getNCurveBack();
+        curveV = PresetParameters.getNCurveV();
+
+        downAngle = PresetParameters.getNDownAngle();
+        downAngleV = PresetParameters.getNDownAngleV();
+        rotate = PresetParameters.getNRotate();
+        rotateV = PresetParameters.getNRotateV();
+        branches = PresetParameters.getNBranches();
     }
 
     // Update is called once per frame
