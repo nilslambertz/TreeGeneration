@@ -69,10 +69,11 @@ public class GeneratorScript : MonoBehaviour
         
         startWeber();
      
+        /*
      this.GetComponent<ConeGenerator>().getCone(2, 1, 30, Vector3.zero, Quaternion.identity);
      
      var x = this.GetComponent<ConeGenerator>().getCone(1, 0.5f, 10, new Vector3(0, 10, 0), Quaternion.Euler(new Vector3(0, 0, 30)));
-     var y = this.GetComponent<ConeGenerator>().getCone(0.8f, 0.2f, 10, new Vector3(0, 15, 0), Quaternion.Euler(new Vector3(0, 0, -30)));
+     var y = this.GetComponent<ConeGenerator>().getCone(0.8f, 0.2f, 10, new Vector3(0, 15, 0), Quaternion.Euler(new Vector3(0, 0, -30)));*/
 
      //  Instantiate(x, Vector3.zero, Quaternion.Euler(new Vector3(0, 0, -90)));
 
@@ -82,13 +83,18 @@ public class GeneratorScript : MonoBehaviour
 
     private void startWeber()
     {
-        float bottomRadius = (float) (length[0] * ratio * (zeroScale + zeroScaleV));
-        print(bottomRadius);
-        float topRadius = (float) (bottomRadius * (1 - ((taper[0] <= 1 && taper[0] >= 0) ? taper[0] : 0)));
-        print(topRadius);
-        float baseLength = (float) ((scale + scaleV) * (length[0] + lengthV[0]));
-        print(baseLength);
-        this.GetComponent<ConeGenerator>().getCone(bottomRadius, topRadius, baseLength, Vector3.zero, Quaternion.identity);
+        float trunkLength = (scale - scaleV) * (length[0] + lengthV[0]);
+        float bottomRadius = (trunkLength * ratio * (zeroScale + zeroScaleV));
+        float topRadius = (bottomRadius * (1 - ((taper[0] <= 1 && taper[0] >= 0) ? taper[0] : 0)));
+        GetComponent<ConeGenerator>().getCone(bottomRadius, topRadius, trunkLength, Vector3.zero, Quaternion.identity);
+
+        float stems = (float) (branches[0] * (0.2 + 0.8 * (length[1] / length[0]) / length[1]));
+        print(stems);
+    }
+
+    private void weberIteration(int depth, int prevRadius, int prevLength)
+    {
+        
     }
 
     private void setPresetValues()
