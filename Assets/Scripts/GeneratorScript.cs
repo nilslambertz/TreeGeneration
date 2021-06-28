@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
 using UnityEngine;
@@ -137,6 +138,57 @@ public class GeneratorScript : MonoBehaviour
         rotate = PresetParameters.getNRotate();
         rotateV = PresetParameters.getNRotateV();
         branches = PresetParameters.getNBranches();
+    }
+
+    private float ShapeRatio(float ratioValue)
+    {
+        switch (shape)
+        {
+            case 0:
+            {
+                return 0.2f + 0.8f * ratioValue;
+            }
+            case 1:
+            {
+                return 0.2f + 0.8f * (float) Math.Sin(Math.PI * ratioValue);
+            }
+            case 2:
+            {
+                return 0.2f + 0.8f * (float) Math.Sin(0.5 * Math.PI * ratioValue);
+            }
+            case 3:
+            {
+                return 1.0f;
+            }
+            case 4:
+            {
+                return 0.5f + 0.5f * ratioValue;
+            }
+            case 5:
+            {
+                if (ratioValue <= 0.7f)
+                {
+                    return ratioValue / 0.7f;
+                }
+
+                return (1.0f - ratioValue) / 0.3f;
+            }
+            case 6:
+            {
+                return 1.0f - 0.8f * ratioValue;
+            }
+            case 7:
+            {
+                if (ratioValue <= 0.7f)
+                {
+                    return 0.5f + 0.5f * ratioValue / 0.7f;
+                }
+
+                return 0.5f + 0.5f * (1.0f - ratioValue) / 0.3f;
+            }
+        }
+
+        return -1f;
     }
 
     // Update is called once per frame
