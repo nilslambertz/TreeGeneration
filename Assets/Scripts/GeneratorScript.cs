@@ -67,35 +67,50 @@ public class GeneratorScript : MonoBehaviour
     void Start()
     {
         setPresetValues();
-        
+
         startWeber();
-     
-        /*
-     this.GetComponent<ConeGenerator>().getCone(2, 1, 30, Vector3.zero, Quaternion.identity);
-     
-     var x = this.GetComponent<ConeGenerator>().getCone(1, 0.5f, 10, new Vector3(0, 10, 0), Quaternion.Euler(new Vector3(0, 0, 30)));
-     var y = this.GetComponent<ConeGenerator>().getCone(0.8f, 0.2f, 10, new Vector3(0, 15, 0), Quaternion.Euler(new Vector3(0, 0, -30)));*/
-
-     //  Instantiate(x, Vector3.zero, Quaternion.Euler(new Vector3(0, 0, -90)));
-
-
-     //   Instantiate(first, new Vector3(0,5,0), Quaternion.identity);
     }
 
     private void startWeber()
     {
-        float trunkLength = (scale - scaleV) * (length[0] + lengthV[0]);
-        float bottomRadius = (trunkLength * ratio * (zeroScale + zeroScaleV));
-        float topRadius = (bottomRadius * (1 - ((taper[0] <= 1 && taper[0] >= 0) ? taper[0] : 0)));
-        GetComponent<ConeGenerator>().getCone(bottomRadius, topRadius, trunkLength, Vector3.zero, Quaternion.identity);
+        float scale_tree = scale + scaleV;
+        float length_base = baseSize * scale_tree;
+        
+        float length_trunk = (length[0] + lengthV[0]) * scale;
+        float radius_trunk = length_trunk * ratio * zeroScale;
+        float topRadius = (radius_trunk * (1 - ((taper[0] <= 1 && taper[0] >= 0) ? taper[0] : 0)));
+        GetComponent<ConeGenerator>().getCone(radius_trunk, topRadius, length_trunk, Vector3.zero, Quaternion.identity);
 
-        float stems = (float) (branches[0] * (0.2 + 0.8 * (length[1] / length[0]) / length[1]));
+        float offset_child = length_trunk * baseSize;
+        print(offset_child);
+        
+        float length_child_max = length[1] + lengthV[1];
+        print(length_child_max);
+        float length_child = length_trunk * length_child_max * ShapeRatio((length_trunk - offset_child) / (length_trunk - length_base));
+        print(length_child);
+                          
+        float stems = (branches[1] * (0.2f + 0.8f * (length[1] / length_trunk) / length[1]));
+        
+        weberIteration(1, new Vector3(0, offset_child, 0), length_child, radius_trunk, length_trunk);
+        
         print(stems);
     }
 
-    private void weberIteration(int depth, int prevRadius, int prevLength)
+    private void weberIteration(int depth, Vector3 startPosition, float currentLength, float prevRadius, float length_parent)
     {
+        float down_n = downAngle[depth] + downAngleV[depth];
         
+        float radius_n = (float) (prevRadius * Math.Pow(currentLength / length_parent, ratioPower));
+        float topRadius = (radius_n * (1 - ((taper[depth] <= 1 && taper[depth] >= 0) ? taper[depth] : 0)));
+        
+        GetComponent<ConeGenerator>().getCone(radius_n, topRadius, currentLength, startPosition, Quaternion.Euler(new Vector3(0, 60, 20)));
+        
+        if (levels < depth)
+        {
+            float length_child_max = length[depth+1] + lengthV[depth+1];
+            float offset_child = currentLength * baseSize;
+            float length_child = length_child_max * (length_parent - 0.6f * offset_child);
+        }
     }
 
     private void setPresetValues()
