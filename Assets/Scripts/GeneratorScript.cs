@@ -66,6 +66,7 @@ public class GeneratorScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        PresetParameters.setPreset(1);
         setPresetValues();
 
         startWeber();
@@ -75,42 +76,100 @@ public class GeneratorScript : MonoBehaviour
     {
         float scale_tree = scale + scaleV;
         float length_base = baseSize * scale_tree;
+        print("length_base: " + length_base);
         
         float length_trunk = (length[0] + lengthV[0]) * scale;
+        print("length_trunk: " + length_trunk);
         float radius_trunk = length_trunk * ratio * zeroScale;
+        print("radius_trunk: " + radius_trunk);
         float topRadius = (radius_trunk * (1 - ((taper[0] <= 1 && taper[0] >= 0) ? taper[0] : 0)));
-        GetComponent<ConeGenerator>().getCone(radius_trunk, topRadius, length_trunk, Vector3.zero, Quaternion.identity);
+        print("topRadius: " + topRadius);
+        var stem = GetComponent<ConeGenerator>().getCone(radius_trunk, topRadius, length_trunk, Vector3.zero, Quaternion.identity);
+        stem.name = "Stem";
 
         float offset_child = length_trunk * baseSize;
-        print(offset_child);
+        print("offset_child: " + offset_child);
         
         float length_child_max = length[1] + lengthV[1];
-        print(length_child_max);
+        print("length_child_max: " + length_child_max);
         float length_child = length_trunk * length_child_max * ShapeRatio((length_trunk - offset_child) / (length_trunk - length_base));
-        print(length_child);
+        print("length_child: " + length_child);
                           
-        float stems = (branches[1] * (0.2f + 0.8f * (length[1] / length_trunk) / length[1]));
-        
-        weberIteration(1, new Vector3(0, offset_child, 0), length_child, radius_trunk, length_trunk);
-        
-        print(stems);
+        int stems = (int) Math.Floor(branches[1] * (0.2f + 0.8f * (length[1] / length_trunk) / length[1]));
+        print("stems: " + stems);
+
+        print("radius_trunk: " + radius_trunk);
+        float radius_child = radius_trunk * (float) (Math.Pow(length_child / length_trunk, ratioPower));
+        print("radius_child: " + radius_child);
+
+        float distanceBetweenChildren = (length_trunk - offset_child) / stems;
+
+        for (int i = 0; i < stems; i++)
+        {
+            float start = offset_child + distanceBetweenChildren * i;
+            weberIteration(1, new Vector3(0, start, 0), length_child, radius_trunk, length_base, length_trunk, start);
+        }
     }
 
-    private void weberIteration(int depth, Vector3 startPosition, float currentLength, float prevRadius, float length_parent)
+    private void weberIteration(int depth, Vector3 startPosition, float currentLength, float prevRadius, float length_base, float length_parent, float offset)
     {
+       // print("--- ITERATION " + depth + " ---");
         float down_n = downAngle[depth] + downAngleV[depth];
         
         float radius_n = (float) (prevRadius * Math.Pow(currentLength / length_parent, ratioPower));
+      //  print("radius_n: " + radius_n);
         float topRadius = (radius_n * (1 - ((taper[depth] <= 1 && taper[depth] >= 0) ? taper[depth] : 0)));
-        
-        GetComponent<ConeGenerator>().getCone(radius_n, topRadius, currentLength, startPosition, Quaternion.Euler(new Vector3(0, 60, 20)));
-        
-        if (levels < depth)
+
+        Vector3 downangle_current = new Vector3();
+
+        if (downAngleV[depth] >= 0)
+        {
+            downangle_current = new Vector3(0, 0, downAngle[depth] + downAngleV[depth]);
+        }
+        else
+        {
+            downangle_current = new Vector3(0, 0,downAngle[depth] + (downAngleV[depth] *
+                                                    (1 - 2 * ShapeRatio(0,
+                                                        (length_parent - offset) / (length_parent - length_base)))));
+         //   print("downangle_current: " + downangle_current);
+        }
+     //   print("downAngleV: " + downAngleV[1]);
+            
+        GetComponent<ConeGenerator>().getCone(radius_n, topRadius, currentLength, startPosition, Quaternion.Euler(downangle_current));
+
+        if (depth < levels)
         {
             float length_child_max = length[depth+1] + lengthV[depth+1];
             float offset_child = currentLength * baseSize;
-            float length_child = length_child_max * (length_parent - 0.6f * offset_child);
+            float length_child = length_child_max * (currentLength - 0.6f * offset_child);
+            
+        /*    print("length_child_max: " + length_child_max);
+            print("offset_child: " + offset_child);
+            print("length_child: " + length_child);
+*/
+            float stems = branches[depth] * (1.0f - 0.5f * offset_child / length_parent);
+  //          print("stems: " + stems);
         }
+    }
+    
+    private float getStems_base(float stems_max, float length_child, float length_parent, float length_child_max)
+    {
+        return stems_max * (0.2f + 0.8f * (length_child / length_parent) / length_child_max);
+    }
+
+    private float getStems_iteration(float stems_max, float offset_child, float length_parent)
+    {
+        return stems_max * (1.0f - 0.5f * offset_child / length_parent);
+    }
+
+    private float getLength_child_base(float length_trunk, float length_child_max, float offset_child, float length_base)
+    {
+        return length_trunk * length_child_max * ShapeRatio(shape, (length_trunk - offset_child) / (length_trunk - length_base));
+    }
+    
+    private float getLength_child_iteration(float length_child_max, float length_current, float offset_child)
+    {
+        return length_child_max * (length_current - 0.6f * offset_child);
     }
 
     private void setPresetValues()
@@ -157,7 +216,12 @@ public class GeneratorScript : MonoBehaviour
 
     private float ShapeRatio(float ratioValue)
     {
-        switch (shape)
+        return ShapeRatio(shape, ratioValue);
+    }
+
+    private float ShapeRatio(int currentShape, float ratioValue)
+    {
+        switch (currentShape)
         {
             case 0:
             {
