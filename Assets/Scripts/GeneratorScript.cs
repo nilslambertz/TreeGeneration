@@ -69,9 +69,6 @@ public class GeneratorScript : MonoBehaviour {
         startWeber();
     }
 
-    // Update is called once per frame
-    private void Update() { }
-
     private void startWeber() {
         var scale_tree = scale + scaleV;
         var length_base = baseSize * scale_tree;
