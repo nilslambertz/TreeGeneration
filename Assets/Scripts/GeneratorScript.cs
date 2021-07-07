@@ -1,6 +1,7 @@
 ﻿using System;
 using DefaultNamespace;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GeneratorScript : MonoBehaviour {
     private float attractionUp;
@@ -74,23 +75,20 @@ public class GeneratorScript : MonoBehaviour {
         var length_base = HelperFunctions.getLength_base(baseSize, scale_tree); // Bare area without branches
         var length_trunk = HelperFunctions.getLength_trunk(length[0], lengthV[0], scale_tree);
         var radius_trunk = HelperFunctions.getRadius_trunk(length_trunk, ratio, zeroScale);
-
         var topRadius = HelperFunctions.getTopRadius(radius_trunk, taper[0]);
+        var length_child_max = HelperFunctions.getLength_child_max(length[1], lengthV[1]);
+
+        // var stems = HelperFunctions.getStems_base(branches[1], length_child, length_trunk, length_child_max);
+        var stems = branches[1];
+        var distanceBetweenChildren = (length_trunk - length_base) / stems;
+            
         var stemObject = GetComponent<ConeGenerator>()
             .getCone(radius_trunk, topRadius, length_trunk, Vector3.zero, Quaternion.identity);
 
-        var length_child_max = length[1] + lengthV[1];
-        var length_child = length_trunk * length_child_max *
-                           ShapeRatio((length_trunk - length_base) / (length_trunk - length_base));
-
-        var stems = (int) Math.Floor(branches[1] * (0.2f + 0.8f * (length[1] / length_trunk) / length[1]));
-
-        var radius_child = radius_trunk * (float) Math.Pow(length_child / length_trunk, ratioPower);
-
-        var distanceBetweenChildren = (length_trunk - length_base) / stems;
-
         for (var i = 0; i < stems; i++) {
             var start = length_base + distanceBetweenChildren * i;
+            var length_child = HelperFunctions.getLength_child_base(shape, length_trunk, length_child_max, start, length_base);
+            var radius_child = HelperFunctions.getRadius_child(radius_trunk, topRadius, length_child, length_trunk, start, ratioPower);
             weberIteration(1, new Vector3(0, start, 0), length_child, radius_trunk, length_base, length_trunk, start);
         }
     }
@@ -105,14 +103,16 @@ public class GeneratorScript : MonoBehaviour {
         var topRadius = HelperFunctions.getTopRadius(radius_n, taper[depth]);
         var downangle_current = new Vector3();
 
-        if (downAngleV[depth] >= 0)
+        if (downAngleV[depth] >= 0) {
             downangle_current = new Vector3(0, 0, downAngle[depth] + downAngleV[depth]);
-        else
-            downangle_current = new Vector3(0, 0, downAngle[depth] + downAngleV[depth] *
+        }
+        else {
+            downangle_current = new Vector3(0, Random.Range(0, 360), downAngle[depth] + downAngleV[depth] *
                 (1 - 2 * ShapeRatio(0,
                     (length_parent - offset) / (length_parent - length_base))));
-        //   print("downangle_current: " + downangle_current);
-        //   print("downAngleV: " + downAngleV[1]);
+            //   print("downangle_current: " + downangle_current);
+            //   print("downAngleV: " + downAngleV[1]);
+        }
 
         GetComponent<ConeGenerator>().getCone(radius_n, topRadius, currentLength, startPosition,
             Quaternion.Euler(downangle_current));
