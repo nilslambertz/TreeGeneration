@@ -34,7 +34,7 @@ namespace DefaultNamespace
         }
 
         public static float getTopRadius(float radius_bottom, float taper) {
-            return radius_bottom * (taper <= 1 && taper >= 0 ? (1 - taper) : 0);
+            return radius_bottom * (taper <= 1 && taper >= 0 ? (1 - taper) : 0.5f);
         }
         
         /* Stems */
