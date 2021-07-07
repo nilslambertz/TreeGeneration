@@ -29,7 +29,7 @@ namespace DefaultNamespace
 
         public static float getRadius_child(float radius_parent_bottom, float radius_parent_top, float length_child, float length_parent, float offset_child,
             float ratioPower) {
-            float radius = (radius_parent_top - radius_parent_bottom) * (offset_child / length_parent);
+            float radius = radius_parent_bottom - (radius_parent_bottom - radius_parent_top) * (offset_child / length_parent);
             return radius * (float) Math.Pow(length_child / length_parent, ratioPower);
         }
 
@@ -45,6 +45,18 @@ namespace DefaultNamespace
         public static int getStems_iteration(float stems_max, float offset_child, float length_parent) {
             return (int) (stems_max * (1.0f - 0.5f * offset_child / length_parent));
         }
+        
+        /* DownAngle */
+
+        public static float getDownAnglePositive(float nDownAngle, float nDownAngleV) {
+            return nDownAngle + nDownAngleV;
+        }
+        public static float getDownAngleNegative(float nDownAngle, float nDownAngleV, float length_parent, float offset_child, float length_base) {
+            return nDownAngle + (nDownAngleV *
+                                 (1 - 2 * ShapeRatio(0,
+                                     (length_parent - offset_child) / (length_parent - length_base))));
+        }
+        
 
         public static float getLength_child_base(int shape, float length_trunk, float length_child_max, float offset_child,
             float length_base) {
