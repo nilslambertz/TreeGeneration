@@ -145,24 +145,6 @@ public class GeneratorScript : MonoBehaviour {
         }
     }
 
-    private float getStems_base(float stems_max, float length_child, float length_parent, float length_child_max) {
-        return stems_max * (0.2f + 0.8f * (length_child / length_parent) / length_child_max);
-    }
-
-    private float getStems_iteration(float stems_max, float offset_child, float length_parent) {
-        return stems_max * (1.0f - 0.5f * offset_child / length_parent);
-    }
-
-    private float getLength_child_base(float length_trunk, float length_child_max, float offset_child,
-        float length_base) {
-        return length_trunk * length_child_max *
-               ShapeRatio(shape, (length_trunk - offset_child) / (length_trunk - length_base));
-    }
-
-    private float getLength_child_iteration(float length_child_max, float length_current, float offset_child) {
-        return length_child_max * (length_current - 0.6f * offset_child);
-    }
-
     private void setPresetValues() {
         shape = PresetParameters.getShape();
         baseSize = PresetParameters.getBaseSize();
