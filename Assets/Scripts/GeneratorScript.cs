@@ -67,10 +67,17 @@ public class GeneratorScript : MonoBehaviour {
         PresetParameters.setPreset(1);
         setPresetValues();
 
-        startWeber();
+        int n = 3;
+        int maxRange = 10;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                startWeber(new Vector3(Random.Range(-maxRange*n,maxRange*n), 0, Random.Range(-maxRange*n,maxRange*n)));
+            }
+        }
     }
 
-    private void startWeber() {
+    private void startWeber(Vector3 startPosition) {
         var scale_tree = HelperFunctions.getScale_tree(scale, scaleV);
         var length_base = HelperFunctions.getLength_base(baseSize, scale_tree); // Bare area without branches
         var length_trunk = HelperFunctions.getLength_trunk(length[0], lengthV[0], scale_tree);
@@ -83,7 +90,7 @@ public class GeneratorScript : MonoBehaviour {
         var distanceBetweenChildren = (length_trunk - length_base) / stems;
             
         var stemObject = GetComponent<ConeGenerator>()
-            .getCone(radius_trunk, topRadius, length_trunk, Vector3.zero, Quaternion.identity);
+            .getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);
         stemObject.name = "Stamm";
 
         var angle = (rotate[1] + Random.Range(-20, 20)) % 360;
@@ -94,10 +101,13 @@ public class GeneratorScript : MonoBehaviour {
             var radius_child = HelperFunctions.getRadius_child(radius_trunk, topRadius, length_child, length_trunk,
                 start, ratioPower);
 
+            Vector3 position = startPosition;
+            position.y = start;
+
             weberIteration(
                 stemObject,
                 1, 
-                new Vector3(0, start, 0), 
+                position, 
                 radius_child, 
                 length_child, 
                 radius_trunk, 
