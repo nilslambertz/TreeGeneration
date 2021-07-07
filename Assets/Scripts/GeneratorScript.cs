@@ -84,50 +84,71 @@ public class GeneratorScript : MonoBehaviour {
             
         var stemObject = GetComponent<ConeGenerator>()
             .getCone(radius_trunk, topRadius, length_trunk, Vector3.zero, Quaternion.identity);
+        stemObject.name = "Stamm";
+
+        var angle = (rotate[1] + Random.Range(-20, 20)) % 360;
 
         for (var i = 0; i < stems; i++) {
             var start = length_base + distanceBetweenChildren * i;
             var length_child = HelperFunctions.getLength_child_base(shape, length_trunk, length_child_max, start, length_base);
-            var radius_child = HelperFunctions.getRadius_child(radius_trunk, topRadius, length_child, length_trunk, start, ratioPower);
-            weberIteration(1, new Vector3(0, start, 0), length_child, radius_trunk, length_base, length_trunk, start);
+            var radius_child = HelperFunctions.getRadius_child(radius_trunk, topRadius, length_child, length_trunk,
+                start, ratioPower);
+
+            weberIteration(
+                stemObject,
+                1, 
+                new Vector3(0, start, 0), 
+                radius_child, 
+                length_child, 
+                radius_trunk, 
+                length_base, 
+                length_trunk, 
+                angle,
+                start);
+            
+            angle = (angle + (rotate[1] + Random.Range(-20, 20))) % 360; 
         }
     }
 
-    private void weberIteration(int depth, Vector3 startPosition, float currentLength, float prevRadius,
-        float length_base, float length_parent, float offset) {
-        // print("--- ITERATION " + depth + " ---");
-        var down_n = downAngle[depth] + downAngleV[depth];
+    private void weberIteration(
+        GameObject parent,
+        int depth, 
+        Vector3 startPosition,
+        float currentRadius,
+        float currentLength,
+        float prevRadius,
+        float length_base, 
+        float length_parent, 
+        float rotateAngle,
+        float offset) {
 
-        var radius_n = (float) (prevRadius * Math.Pow(currentLength / length_parent, ratioPower));
-        //  print("radius_n: " + radius_n);
-        var topRadius = HelperFunctions.getTopRadius(radius_n, taper[depth]);
-        var downangle_current = new Vector3();
+        var topRadius = HelperFunctions.getTopRadius(currentRadius, taper[depth]);
+        Vector3 downangle_current;
 
         if (downAngleV[depth] >= 0) {
-            downangle_current = new Vector3(0, 0, downAngle[depth] + downAngleV[depth]);
+            var angle = HelperFunctions.getDownAnglePositive(downAngle[depth], downAngleV[depth]);
+            downangle_current = new Vector3(0, rotateAngle, angle);
         }
         else {
-            downangle_current = new Vector3(0, Random.Range(0, 360), downAngle[depth] + downAngleV[depth] *
-                (1 - 2 * ShapeRatio(0,
-                    (length_parent - offset) / (length_parent - length_base))));
-            //   print("downangle_current: " + downangle_current);
-            //   print("downAngleV: " + downAngleV[1]);
+            var angle = HelperFunctions.getDownAngleNegative(downAngle[depth], downAngleV[depth], length_parent, offset,
+                length_base);
+            
+            downangle_current = new Vector3(0, rotateAngle, angle);
         }
 
-        GetComponent<ConeGenerator>().getCone(radius_n, topRadius, currentLength, startPosition,
+        var x =  GetComponent<ConeGenerator>().getCone(currentRadius, topRadius, currentLength, startPosition,
             Quaternion.Euler(downangle_current));
+
+        x.transform.parent = parent.transform;
+        
+        
 
         if (depth < levels) {
             var length_child_max = length[depth + 1] + lengthV[depth + 1];
             var offset_child = currentLength * baseSize;
             var length_child = length_child_max * (currentLength - 0.6f * offset_child);
-
-            /*    print("length_child_max: " + length_child_max);
-                print("offset_child: " + offset_child);
-                print("length_child: " + length_child);
-    */
+    
             var stems = branches[depth] * (1.0f - 0.5f * offset_child / length_parent);
-            //          print("stems: " + stems);
         }
     }
 
