@@ -70,40 +70,27 @@ public class GeneratorScript : MonoBehaviour {
     }
 
     private void startWeber() {
-        var scale_tree = scale + scaleV;
-        var length_base = baseSize * scale_tree;
-        print("length_base: " + length_base);
+        var scale_tree = HelperFunctions.getScale_tree(scale, scaleV);
+        var length_base = HelperFunctions.getLength_base(baseSize, scale_tree); // Bare area without branches
+        var length_trunk = HelperFunctions.getLength_trunk(length[0], lengthV[0], scale_tree);
+        var radius_trunk = HelperFunctions.getRadius_trunk(length_trunk, ratio, zeroScale);
 
-        var length_trunk = (length[0] + lengthV[0]) * scale;
-        print("length_trunk: " + length_trunk);
-        var radius_trunk = length_trunk * ratio * zeroScale;
-        print("radius_trunk: " + radius_trunk);
-        var topRadius = radius_trunk * (1 - (taper[0] <= 1 && taper[0] >= 0 ? taper[0] : 0));
-        print("topRadius: " + topRadius);
-        var stem = GetComponent<ConeGenerator>()
+        var topRadius = HelperFunctions.getTopRadius(radius_trunk, taper[0]);
+        var stemObject = GetComponent<ConeGenerator>()
             .getCone(radius_trunk, topRadius, length_trunk, Vector3.zero, Quaternion.identity);
-        stem.name = "Stem";
-
-        var offset_child = length_trunk * baseSize;
-        print("offset_child: " + offset_child);
 
         var length_child_max = length[1] + lengthV[1];
-        print("length_child_max: " + length_child_max);
         var length_child = length_trunk * length_child_max *
-                           ShapeRatio((length_trunk - offset_child) / (length_trunk - length_base));
-        print("length_child: " + length_child);
+                           ShapeRatio((length_trunk - length_base) / (length_trunk - length_base));
 
         var stems = (int) Math.Floor(branches[1] * (0.2f + 0.8f * (length[1] / length_trunk) / length[1]));
-        print("stems: " + stems);
 
-        print("radius_trunk: " + radius_trunk);
         var radius_child = radius_trunk * (float) Math.Pow(length_child / length_trunk, ratioPower);
-        print("radius_child: " + radius_child);
 
-        var distanceBetweenChildren = (length_trunk - offset_child) / stems;
+        var distanceBetweenChildren = (length_trunk - length_base) / stems;
 
         for (var i = 0; i < stems; i++) {
-            var start = offset_child + distanceBetweenChildren * i;
+            var start = length_base + distanceBetweenChildren * i;
             weberIteration(1, new Vector3(0, start, 0), length_child, radius_trunk, length_base, length_trunk, start);
         }
     }
@@ -115,8 +102,7 @@ public class GeneratorScript : MonoBehaviour {
 
         var radius_n = (float) (prevRadius * Math.Pow(currentLength / length_parent, ratioPower));
         //  print("radius_n: " + radius_n);
-        var topRadius = radius_n * (1 - (taper[depth] <= 1 && taper[depth] >= 0 ? taper[depth] : 0));
-
+        var topRadius = HelperFunctions.getTopRadius(radius_n, taper[depth]);
         var downangle_current = new Vector3();
 
         if (downAngleV[depth] >= 0)
