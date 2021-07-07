@@ -3,6 +3,36 @@
 namespace DefaultNamespace
 {
     public class HelperFunctions {
+
+        /* Scale */
+        public static float getScale_tree(float scale, float scaleV) {
+            return scale + scaleV;
+        }
+
+        /* Length */
+        public static float getLength_base(float baseSize, float scale_tree) {
+            return baseSize * scale_tree;
+        }
+
+        public static float getLength_trunk(float zeroLength, float zeroLengthV, float scale_tree) {
+            return (zeroLength + zeroLengthV) * scale_tree;
+        }
+
+        /* Radius */
+        public static float getRadius_trunk(float length_trunk, float ratio, float zeroScale) {
+            return length_trunk * ratio * zeroScale;
+        }
+
+        public static float getRadius_child(float radius_parent, float length_child, float length_parent,
+            float ratioPower) {
+            return radius_parent * (float) Math.Pow(length_child / length_parent, ratioPower);
+        }
+
+        public static float getTopRadius(float radius_bottom, float taper) {
+            return radius_bottom * (taper <= 1 && taper >= 0 ? (1 - taper) : 1);
+        }
+        
+        /* Stems */
         public static float getStems_base(float stems_max, float length_child, float length_parent, float length_child_max) {
             return stems_max * (0.2f + 0.8f * (length_child / length_parent) / length_child_max);
         }
