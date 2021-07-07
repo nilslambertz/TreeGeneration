@@ -18,14 +18,19 @@ namespace DefaultNamespace
             return (zeroLength + zeroLengthV) * scale_tree;
         }
 
+        public static float getLength_child_max(float nLength, float nLengthV) {
+            return nLength + nLengthV;
+        }
+
         /* Radius */
         public static float getRadius_trunk(float length_trunk, float ratio, float zeroScale) {
             return length_trunk * ratio * zeroScale;
         }
 
-        public static float getRadius_child(float radius_parent, float length_child, float length_parent,
+        public static float getRadius_child(float radius_parent_bottom, float radius_parent_top, float length_child, float length_parent, float offset_child,
             float ratioPower) {
-            return radius_parent * (float) Math.Pow(length_child / length_parent, ratioPower);
+            float radius = (radius_parent_top - radius_parent_bottom) * (offset_child / length_parent);
+            return radius * (float) Math.Pow(length_child / length_parent, ratioPower);
         }
 
         public static float getTopRadius(float radius_bottom, float taper) {
@@ -33,12 +38,12 @@ namespace DefaultNamespace
         }
         
         /* Stems */
-        public static float getStems_base(float stems_max, float length_child, float length_parent, float length_child_max) {
-            return stems_max * (0.2f + 0.8f * (length_child / length_parent) / length_child_max);
+        public static int getStems_base(float stems_max, float length_child, float length_parent, float length_child_max) {
+            return (int) (stems_max * (0.2f + 0.8f * (length_child / length_parent) / length_child_max));
         }
 
-        public static float getStems_iteration(float stems_max, float offset_child, float length_parent) {
-            return stems_max * (1.0f - 0.5f * offset_child / length_parent);
+        public static int getStems_iteration(float stems_max, float offset_child, float length_parent) {
+            return (int) (stems_max * (1.0f - 0.5f * offset_child / length_parent));
         }
 
         public static float getLength_child_base(int shape, float length_trunk, float length_child_max, float offset_child,
