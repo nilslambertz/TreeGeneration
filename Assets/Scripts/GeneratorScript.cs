@@ -194,8 +194,7 @@ public class GeneratorScript : MonoBehaviour {
                 var radius_child = HelperFunctions.getRadius_child(currentRadius, topRadius, length_child,
                     currentLength, start, ratioPower);
 
-                var stems = (int) (branches[depth] * (1.0f - 0.5f * offset_child / length_parent));
-            
+                var stems = HelperFunctions.getStems_iteration(branches[depth], offset_child, length_parent);
                 var newPosition = startPosition + Vector3.Normalize(branchObject.transform.up) * start;
 
                 weberIteration(
