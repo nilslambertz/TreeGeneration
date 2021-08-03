@@ -75,6 +75,10 @@ public class GeneratorScript : MonoBehaviour {
         startWeber(Vector3.zero);
     }
 
+    /// <summary>
+    /// Starts Weber-Penn-algorithm
+    /// </summary>
+    /// <param name="startPosition">initial position of the tree</param>
     private void startWeber(Vector3 startPosition) {
         // Calculating values for stem
         var scale_tree = HelperFunctions.getScale_tree(scale, scaleV);
@@ -216,6 +220,9 @@ public class GeneratorScript : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Sets all values depending on the current preset
+    /// </summary>
     private void setPresetValues() {
         shape = PresetParameters.getShape();
         baseSize = PresetParameters.getBaseSize();
@@ -255,44 +262,5 @@ public class GeneratorScript : MonoBehaviour {
         rotate = PresetParameters.getNRotate();
         rotateV = PresetParameters.getNRotateV();
         branches = PresetParameters.getNBranches();
-    }
-
-    private float ShapeRatio(float ratioValue) {
-        return ShapeRatio(shape, ratioValue);
-    }
-
-    private float ShapeRatio(int currentShape, float ratioValue) {
-        switch (currentShape) {
-            case 0: {
-                return 0.2f + 0.8f * ratioValue;
-            }
-            case 1: {
-                return 0.2f + 0.8f * (float) Math.Sin(Math.PI * ratioValue);
-            }
-            case 2: {
-                return 0.2f + 0.8f * (float) Math.Sin(0.5 * Math.PI * ratioValue);
-            }
-            case 3: {
-                return 1.0f;
-            }
-            case 4: {
-                return 0.5f + 0.5f * ratioValue;
-            }
-            case 5: {
-                if (ratioValue <= 0.7f) return ratioValue / 0.7f;
-
-                return (1.0f - ratioValue) / 0.3f;
-            }
-            case 6: {
-                return 1.0f - 0.8f * ratioValue;
-            }
-            case 7: {
-                if (ratioValue <= 0.7f) return 0.5f + 0.5f * ratioValue / 0.7f;
-
-                return 0.5f + 0.5f * (1.0f - ratioValue) / 0.3f;
-            }
-        }
-
-        return -1f;
     }
 }
