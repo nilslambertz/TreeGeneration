@@ -4,6 +4,11 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class GeneratorScript : MonoBehaviour {
+    /* Public settings */
+    public int presetId = 1;
+
+    private int c = 0;
+
     private float attractionUp;
     private float baseSize; // Länge des Stamms bis zum ersten Ast
     private float[] branches;
@@ -64,49 +69,50 @@ public class GeneratorScript : MonoBehaviour {
 
     // Start is called before the first frame update
     private void Start() {
-        PresetParameters.setPreset(1);
+        PresetParameters.setPreset(presetId);
         setPresetValues();
 
-        int n = 3;
-        int maxRange = 10;
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                startWeber(new Vector3(Random.Range(-maxRange*n,maxRange*n), 0, Random.Range(-maxRange*n,maxRange*n)));
-            }
-        }
+        startWeber(Vector3.zero);
     }
 
     private void startWeber(Vector3 startPosition) {
+        // Calculating values for stem
         var scale_tree = HelperFunctions.getScale_tree(scale, scaleV);
         var length_base = HelperFunctions.getLength_base(baseSize, scale_tree); // Bare area without branches
         var length_trunk = HelperFunctions.getLength_trunk(length[0], lengthV[0], scale_tree);
         var radius_trunk = HelperFunctions.getRadius_trunk(length_trunk, ratio, zeroScale);
         var topRadius = HelperFunctions.getTopRadius(radius_trunk, taper[0]);
         var length_child_max = HelperFunctions.getLength_child_max(length[1], lengthV[1]);
-
-        // var stems = HelperFunctions.getStems_base(branches[1], length_child, length_trunk, length_child_max);
+        
+        // Number of children at stem and vertical distance between them
         var stems = branches[1];
         var distanceBetweenChildren = (length_trunk - length_base) / stems;
             
+        // Generating stem-object
         var stemObject = GetComponent<ConeGenerator>()
             .getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);
-        stemObject.name = "Stamm";
-
-        var angle = (rotate[1] + Random.Range(-20, 20)) % 360;
-
+        stemObject.name = "Stem";
+        
+        var angle = (rotate[1] + Random.Range(-20, 20)) % 360; // Rotation around the stem where next branch is spawned
         for (var i = 0; i < stems; i++) {
+            // vertical offset of the child
             var start = length_base + distanceBetweenChildren * i;
+            Vector3 position = startPosition;
+            position.y = start;
+            
+            // Calculating child values
             var length_child = HelperFunctions.getLength_child_base(shape, length_trunk, length_child_max, start, length_base);
             var radius_child = HelperFunctions.getRadius_child(radius_trunk, topRadius, length_child, length_trunk,
                 start, ratioPower);
+            var numberOfChildren =
+                HelperFunctions.getStems_base(branches[2], length_child, length_trunk, length_child_max);
 
-            Vector3 position = startPosition;
-            position.y = start;
-
+            // Next iteration of the algorithm, starting with the child-object
             weberIteration(
+                i,
                 stemObject,
                 1, 
+                numberOfChildren,
                 position, 
                 radius_child, 
                 length_child, 
@@ -116,13 +122,32 @@ public class GeneratorScript : MonoBehaviour {
                 angle,
                 start);
             
-            angle = (angle + (rotate[1] + Random.Range(-20, 20))) % 360; 
+            angle = (angle + (rotate[1] + Random.Range(-20, 20))) % 360; // Next angle around the stem
         }
+        
+        print("Number of objects: " + c); // Number of objects spawned
     }
-
+    
+    /// <summary>
+    /// Iteration of the Weber-Penn-algorithm
+    /// </summary>
+    /// <param name="id">child-id</param>
+    /// <param name="parent">parent-object</param>
+    /// <param name="depth">current depth in algorithm</param>
+    /// <param name="numberOfChildren">number of children this object will generate</param>
+    /// <param name="startPosition">initial position of this object</param>
+    /// <param name="currentRadius">radius of this branch</param>
+    /// <param name="currentLength">length of this branch</param>
+    /// <param name="prevRadius">radius of the parent-branch</param>
+    /// <param name="length_base">length of branchless area at the stem</param>
+    /// <param name="length_parent">length of the parent-branch</param>
+    /// <param name="rotateAngle">angle around the parent-stem</param>
+    /// <param name="offset">offset from the start of the stem</param>
     private void weberIteration(
+        int id,
         GameObject parent,
         int depth, 
+        int numberOfChildren,
         Vector3 startPosition,
         float currentRadius,
         float currentLength,
@@ -137,28 +162,58 @@ public class GeneratorScript : MonoBehaviour {
 
         if (downAngleV[depth] >= 0) {
             var angle = HelperFunctions.getDownAnglePositive(downAngle[depth], downAngleV[depth]);
-            downangle_current = new Vector3(0, rotateAngle, angle);
+            downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
         }
         else {
             var angle = HelperFunctions.getDownAngleNegative(downAngle[depth], downAngleV[depth], length_parent, offset,
                 length_base);
             
-            downangle_current = new Vector3(0, rotateAngle, angle);
+            downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
         }
-
-        var x =  GetComponent<ConeGenerator>().getCone(currentRadius, topRadius, currentLength, startPosition,
+        
+        var branchObject =  GetComponent<ConeGenerator>().getCone(currentRadius, topRadius, currentLength, startPosition,
             Quaternion.Euler(downangle_current));
 
-        x.transform.parent = parent.transform;
+        branchObject.transform.parent = parent.transform;
+        branchObject.name = "Branch " + id;
         
+        c++;
         
+     //   if (depth < levels-1) {
+        if (depth < 2) {
+            var startOffset = currentLength / 10;
+            var endOffset = currentLength / 5;
+            var distanceBetweenChildren = (currentLength - (startOffset + endOffset)) / numberOfChildren;
+            var angle = (rotate[depth] + Random.Range(-20, 20)) % 360;
+        //    int i = 0;
+            for (var i = 0; i < numberOfChildren; i++) {
+                var start = startOffset + distanceBetweenChildren * i;
+                var length_child_max = length[depth + 1] + lengthV[depth + 1];
+                var offset_child = currentLength * baseSize;
+                var length_child = HelperFunctions.getLength_child_iteration(length_child_max, currentLength, offset_child+start);
+                var radius_child = HelperFunctions.getRadius_child(currentRadius, topRadius, length_child,
+                    currentLength, start, ratioPower);
 
-        if (depth < levels) {
-            var length_child_max = length[depth + 1] + lengthV[depth + 1];
-            var offset_child = currentLength * baseSize;
-            var length_child = length_child_max * (currentLength - 0.6f * offset_child);
-    
-            var stems = branches[depth] * (1.0f - 0.5f * offset_child / length_parent);
+                var stems = (int) (branches[depth] * (1.0f - 0.5f * offset_child / length_parent));
+            
+                var newPosition = startPosition + Vector3.Normalize(branchObject.transform.up) * start;
+
+                weberIteration(
+                    i,
+                    branchObject,
+                    depth+1, 
+                    stems,
+                    newPosition, 
+                    radius_child, 
+                    length_child, 
+                    currentRadius, 
+                    length_base, 
+                    currentLength, 
+                    angle,
+                    offset + start);
+            
+                angle = (angle + (rotate[depth] + Random.Range(-20, 20))) % 360; 
+            }
         }
     }
 
