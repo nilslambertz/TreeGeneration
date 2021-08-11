@@ -166,15 +166,17 @@ public class GeneratorScript : MonoBehaviour {
 
         if (downAngleV[depth] >= 0) {
             var angle = HelperFunctions.getDownAnglePositive(downAngle[depth], downAngleV[depth]);
-            downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
+            print(angle);
+            downangle_current = new Vector3(0, rotateAngle,  angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
         }
         else {
             var angle = HelperFunctions.getDownAngleNegative(downAngle[depth], downAngleV[depth], length_parent, offset,
                 length_base);
+            print(angle);
             
             downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
         }
-        
+
         var branchObject =  GetComponent<ConeGenerator>().getCone(currentRadius, topRadius, currentLength, startPosition,
             Quaternion.Euler(downangle_current));
 
@@ -188,7 +190,7 @@ public class GeneratorScript : MonoBehaviour {
             var startOffset = currentLength / 10;
             var endOffset = currentLength / 5;
             var distanceBetweenChildren = (currentLength - (startOffset + endOffset)) / numberOfChildren;
-            var angle = (rotate[depth] + Random.Range(-20, 20)) % 360;
+            var angle = 90 + (rotate[depth] + Random.Range(-20, 20)) % 360;
         //    int i = 0;
             for (var i = 0; i < numberOfChildren; i++) {
                 var start = startOffset + distanceBetweenChildren * i;
@@ -215,7 +217,7 @@ public class GeneratorScript : MonoBehaviour {
                     angle,
                     offset + start);
             
-                angle = (angle + (rotate[depth] + Random.Range(-20, 20))) % 360; 
+                angle = 90 + (angle + (rotate[depth] + Random.Range(-20, 20))) % 360; 
             }
         }
     }
