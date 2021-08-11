@@ -1,6 +1,7 @@
 ﻿using System;
 using DefaultNamespace;
 using UnityEngine;
+using Preset = UnityEditor.Presets.Preset;
 using Random = UnityEngine.Random;
 
 public class GeneratorScript : MonoBehaviour {
@@ -66,9 +67,15 @@ public class GeneratorScript : MonoBehaviour {
     private float zeroScaleV;
     private float zScale;
     private float zScaleV;
+    
+    // Preset-Helperclass
+    private PresetParameters presetParameters;
+    private Preset currentPreset;
 
     // Start is called before the first frame update
     private void Start() {
+        presetParameters = new PresetParameters();
+        
         PresetParameters.setPreset(presetId);
         setPresetValues();
 
