@@ -5,7 +5,7 @@
         public int levels;
         public float lobeDepth;
         public int lobes;
-        public int[] nBaseSplits;
+        public int nBaseSplits;
         public int[] nBranches;
         public float[] nCurve;
         public float[] nCurveBack;
@@ -34,7 +34,7 @@
         public Preset(int shape,
             float baseSize, float scale, float scaleV, float zScale, float zscaleV, int levels, float ratio,
             float ratioPower, int lobes, float lobeDepth, float flare, float zeroScale, float zeroScaleV,
-            float[] nLength, float[] nLengthV, float[] nTaper, int[] nBaseSplits, float[] nSegSplits,
+            float[] nLength, float[] nLengthV, float[] nTaper, int nBaseSplits, float[] nSegSplits,
             float[] nSplitAngle, float[] nSplitAngleV, float[] nCurveRes, float[] nCurve, float[] nCurveBack,
             float[] nCurveV, float[] nDownAngle, float[] nDownAngleV, float[] nRotate, float[] nRotateV,
             int[] nBranches) {
