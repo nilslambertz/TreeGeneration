@@ -1,5 +1,27 @@
-﻿namespace DefaultNamespace {
+﻿using System.Collections.Generic;
+
+namespace DefaultNamespace {
     public class PresetParameters {
+
+        private static List<Preset> presetList = new List<Preset>();
+
+        public PresetParameters() {
+            Preset quakingAspen = new Preset(
+                7, 0.4f, 13, 3, 1, 0,
+                3, 0.015f, 1.2f, 5, 0.07f,
+                0.6f, 1, 0, new []{1, 0.3f, 0.6f, 0},
+                new []{0f, 0, 0, 0}, new []{1f, 1, 1, 1},
+                0, new []{0f, 0, 0, 0}, new []{0f, 0, 0, 0},
+                new []{0f, 0, 0, 0}, new []{3f, 5, 3, 1},
+                new []{0f, -40, -40, 0}, new []{0f, 0, 0, 0},
+                new []{20f, 50, 75, 0}, new []{0f, 60, 45, 45},
+                new []{0f, -50, 10, 10}, new []{0f, 140, 140, 77},
+                new []{0f, 0, 0, 0}, new []{0, 50, 30, 10}
+            );
+            
+            presetList.Add(quakingAspen);
+        }
+
         /*
          * 0 = Quaking Aspen
          * 1 = Black Tupelo
