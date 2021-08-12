@@ -111,13 +111,11 @@ public class GeneratorScript : MonoBehaviour {
 
         if (treePreset.nDownAngleV[depth] >= 0) {
             var angle = HelperFunctions.getDownAnglePositive(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth]);
-            print(angle);
             downangle_current = new Vector3(0, rotateAngle,  angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
         }
         else {
             var angle = HelperFunctions.getDownAngleNegative(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth], length_parent, offset,
                 length_base);
-            print(angle);
             
             downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
         }
