@@ -3,10 +3,10 @@
 namespace DefaultNamespace {
     public class PresetParameters {
 
-        private static List<Preset> presetList = new List<Preset>();
+        private static List<TreePreset> presetList = new List<TreePreset>();
 
         public PresetParameters() {
-            Preset quakingAspen = new Preset("Quaking Aspen",
+            TreePreset quakingAspen = new TreePreset("Quaking Aspen",
                 7, 0.4f, 13, 3, 1, 0,
                 3, 0.015f, 1.2f, 5, 0.07f,
                 0.6f, 1, 0, new []{1, 0.3f, 0.6f, 0},
@@ -19,7 +19,7 @@ namespace DefaultNamespace {
                 new []{0f, 0, 0, 0}, new []{0, 50, 30, 10}
             );
             
-            Preset blackTupelo = new Preset("Black Tupelo",
+            TreePreset blackTupelo = new TreePreset("Black Tupelo",
                 4, 0.2f, 23, 5, 1, 0,
                 4, 0.015f, 1.3f, 3, 0.1f,
                 1f, 1, 0, new []{1, 0.3f, 0.6f, 0.4f},
@@ -32,7 +32,7 @@ namespace DefaultNamespace {
                 new []{0f, 0, 0, 0}, new []{0, 50, 25, 12}
             );
             
-            Preset weepingWillow = new Preset("Weeping Willow",
+            TreePreset weepingWillow = new TreePreset("Weeping Willow",
                 3, 0.05f, 15, 5, 1, 0,
                 4, 0.03f, 2f, 9, 0.03f,
                 0.75f, 1, 0, new []{0.8f, 0.5f, 1.5f, 0.1f},
@@ -45,7 +45,7 @@ namespace DefaultNamespace {
                 new []{0f, 30, 30, 0}, new []{0, 25, 10, 300}
             );
             
-            Preset blackOak = new Preset("Black Oak",
+            TreePreset blackOak = new TreePreset("Black Oak",
                 2, 0.05f, 10, 10, 1, 0,
                 3, 0.018f, 1.3f, 5, 0.1f,
                 1.2f, 1, 0, new []{1f, 0.8f, 0.2f, 0.4f},
@@ -64,7 +64,7 @@ namespace DefaultNamespace {
             presetList.Add(blackOak);
         }
 
-        public Preset getPreset(int index) {
+        public TreePreset getPreset(int index) {
             if (index < presetList.Count) {
                 return presetList[index];
             }

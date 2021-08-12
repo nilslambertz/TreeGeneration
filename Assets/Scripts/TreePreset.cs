@@ -1,5 +1,5 @@
 ﻿namespace DefaultNamespace {
-    public class Preset {
+    public class TreePreset {
         public string name;
         public float baseSize;
         public float flare;
@@ -32,7 +32,7 @@
         public float zScale;
         public float zscaleV;
 
-        public Preset(string name, int shape,
+        public TreePreset(string name, int shape,
             float baseSize, float scale, float scaleV, float zScale, float zscaleV, int levels, float ratio,
             float ratioPower, int lobes, float lobeDepth, float flare, float zeroScale, float zeroScaleV,
             float[] nLength, float[] nLengthV, float[] nTaper, int nBaseSplits, float[] nSegSplits,

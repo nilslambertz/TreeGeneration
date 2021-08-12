@@ -9,13 +9,13 @@ public class GeneratorScript : MonoBehaviour {
 
     // Preset-Helperclass
     private PresetParameters presetParameters;
-    private Preset currentPreset;
+    private TreePreset treePreset;
 
     // Start is called before the first frame update
     private void Start() {
         presetParameters = new PresetParameters();
 
-        currentPreset = presetParameters.getPreset(presetId);
+        treePreset = presetParameters.getPreset(presetId);
         
         startWeber(Vector3.zero);
     }
@@ -26,15 +26,15 @@ public class GeneratorScript : MonoBehaviour {
     /// <param name="startPosition">initial position of the tree</param>
     private void startWeber(Vector3 startPosition) {
         // Calculating values for stem
-        var scale_tree = HelperFunctions.getScale_tree(currentPreset.scale, currentPreset.scaleV);
-        var length_base = HelperFunctions.getLength_base(currentPreset.baseSize, scale_tree); // Bare area without branches
-        var length_trunk = HelperFunctions.getLength_trunk(currentPreset.nLength[0], currentPreset.nLengthV[0], scale_tree);
-        var radius_trunk = HelperFunctions.getRadius_trunk(length_trunk, currentPreset.ratio, currentPreset.zeroScale);
-        var topRadius = HelperFunctions.getTopRadius(radius_trunk, currentPreset.nTaper[0]);
-        var length_child_max = HelperFunctions.getLength_child_max(currentPreset.nLength[1], currentPreset.nLengthV[1]);
+        var scale_tree = HelperFunctions.getScale_tree(treePreset.scale, treePreset.scaleV);
+        var length_base = HelperFunctions.getLength_base(treePreset.baseSize, scale_tree); // Bare area without branches
+        var length_trunk = HelperFunctions.getLength_trunk(treePreset.nLength[0], treePreset.nLengthV[0], scale_tree);
+        var radius_trunk = HelperFunctions.getRadius_trunk(length_trunk, treePreset.ratio, treePreset.zeroScale);
+        var topRadius = HelperFunctions.getTopRadius(radius_trunk, treePreset.nTaper[0]);
+        var length_child_max = HelperFunctions.getLength_child_max(treePreset.nLength[1], treePreset.nLengthV[1]);
         
         // Number of children at stem and vertical distance between them
-        var stems = currentPreset.nBranches[1];
+        var stems = treePreset.nBranches[1];
         var distanceBetweenChildren = (length_trunk - length_base) / stems;
             
         // Generating stem-object
@@ -42,7 +42,7 @@ public class GeneratorScript : MonoBehaviour {
             .getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);
         stemObject.name = "Stem";
         
-        var angle = (currentPreset.nRotate[1] + Random.Range(-20, 20)) % 360; // Rotation around the stem where next branch is spawned
+        var angle = (treePreset.nRotate[1] + Random.Range(-20, 20)) % 360; // Rotation around the stem where next branch is spawned
         for (var i = 0; i < stems; i++) {
             // vertical offset of the child
             var start = length_base + distanceBetweenChildren * i;
@@ -50,11 +50,11 @@ public class GeneratorScript : MonoBehaviour {
             position.y = start;
             
             // Calculating child values
-            var length_child = HelperFunctions.getLength_child_base(currentPreset.shape, length_trunk, length_child_max, start, length_base);
+            var length_child = HelperFunctions.getLength_child_base(treePreset.shape, length_trunk, length_child_max, start, length_base);
             var radius_child = HelperFunctions.getRadius_child(radius_trunk, topRadius, length_child, length_trunk,
-                start, currentPreset.ratioPower);
+                start, treePreset.ratioPower);
             var numberOfChildren =
-                HelperFunctions.getStems_base(currentPreset.nBranches[2], length_child, length_trunk, length_child_max);
+                HelperFunctions.getStems_base(treePreset.nBranches[2], length_child, length_trunk, length_child_max);
 
             // Next iteration of the algorithm, starting with the child-object
             weberIteration(
@@ -71,7 +71,7 @@ public class GeneratorScript : MonoBehaviour {
                 angle,
                 start);
             
-            angle = (angle + (currentPreset.nRotate[1] + Random.Range(-20, 20))) % 360; // Next angle around the stem
+            angle = (angle + (treePreset.nRotate[1] + Random.Range(-20, 20))) % 360; // Next angle around the stem
         }
         
         print("Number of objects: " + objectCount); // Number of objects spawned
@@ -106,16 +106,16 @@ public class GeneratorScript : MonoBehaviour {
         float rotateAngle,
         float offset) {
 
-        var topRadius = HelperFunctions.getTopRadius(currentRadius, currentPreset.nTaper[depth]);
+        var topRadius = HelperFunctions.getTopRadius(currentRadius, treePreset.nTaper[depth]);
         Vector3 downangle_current;
 
-        if (currentPreset.nDownAngleV[depth] >= 0) {
-            var angle = HelperFunctions.getDownAnglePositive(currentPreset.nDownAngle[depth], currentPreset.nDownAngleV[depth]);
+        if (treePreset.nDownAngleV[depth] >= 0) {
+            var angle = HelperFunctions.getDownAnglePositive(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth]);
             print(angle);
             downangle_current = new Vector3(0, rotateAngle,  angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
         }
         else {
-            var angle = HelperFunctions.getDownAngleNegative(currentPreset.nDownAngle[depth], currentPreset.nDownAngleV[depth], length_parent, offset,
+            var angle = HelperFunctions.getDownAngleNegative(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth], length_parent, offset,
                 length_base);
             print(angle);
             
@@ -135,17 +135,17 @@ public class GeneratorScript : MonoBehaviour {
             var startOffset = currentLength / 10;
             var endOffset = currentLength / 5;
             var distanceBetweenChildren = (currentLength - (startOffset + endOffset)) / numberOfChildren;
-            var angle = 90 + (currentPreset.nRotate[depth] + Random.Range(-20, 20)) % 360;
+            var angle = 90 + (treePreset.nRotate[depth] + Random.Range(-20, 20)) % 360;
         //    int i = 0;
             for (var i = 0; i < numberOfChildren; i++) {
                 var start = startOffset + distanceBetweenChildren * i;
-                var length_child_max = currentPreset.nLength[depth + 1] + currentPreset.nLengthV[depth + 1];
-                var offset_child = currentLength * currentPreset.baseSize;
+                var length_child_max = treePreset.nLength[depth + 1] + treePreset.nLengthV[depth + 1];
+                var offset_child = currentLength * treePreset.baseSize;
                 var length_child = HelperFunctions.getLength_child_iteration(length_child_max, currentLength, offset_child+start);
                 var radius_child = HelperFunctions.getRadius_child(currentRadius, topRadius, length_child,
-                    currentLength, start, currentPreset.ratioPower);
+                    currentLength, start, treePreset.ratioPower);
 
-                var stems = HelperFunctions.getStems_iteration(currentPreset.nBranches[depth], offset_child, length_parent);
+                var stems = HelperFunctions.getStems_iteration(treePreset.nBranches[depth], offset_child, length_parent);
                 var newPosition = startPosition + Vector3.Normalize(branchObject.transform.up) * start;
 
                 weberIteration(
@@ -162,7 +162,7 @@ public class GeneratorScript : MonoBehaviour {
                     angle,
                     offset + start);
             
-                angle = 90 + (angle + (currentPreset.nRotate[depth] + Random.Range(-20, 20))) % 360; 
+                angle = 90 + (angle + (treePreset.nRotate[depth] + Random.Range(-20, 20))) % 360; 
             }
         }
     }
