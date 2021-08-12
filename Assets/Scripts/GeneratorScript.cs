@@ -1,73 +1,12 @@
-﻿using System;
-using DefaultNamespace;
+﻿using DefaultNamespace;
 using UnityEngine;
-using Preset = UnityEditor.Presets.Preset;
 using Random = UnityEngine.Random;
 
 public class GeneratorScript : MonoBehaviour {
     /* Public settings */
     public int presetId = 1;
+    private int objectCount = 0;
 
-    private int c = 0;
-
-    private float attractionUp;
-    private float baseSize; // Länge des Stamms bis zum ersten Ast
-    private float[] branches;
-    private float[] curve;
-    private float[] curveBack;
-    private float[] curveRes;
-    private float[] curveV;
-
-    // Shared values
-    private float[] downAngle;
-    private float[] downAngleV;
-
-    private float flare; // Exponentielle Expansion vom Stamm aus
-    private float leafScale;
-    private float leafScaleX;
-    private float leafShape;
-
-    // Blätter
-    private float leaves;
-    private float[] length;
-    private float[] lengthV;
-
-    private int levels; // Rekursionstiefe
-    private float lobeDepth;
-
-    // ??
-    private int lobes;
-    private float prunePowerHigh;
-    private float prunePowerLow;
-
-    // Pruning
-    private float pruneRatio;
-    private float pruneWidth;
-    private float pruneWidthPeak;
-    private float ratio; // Normalisierter Radius
-    private float ratioPower; // Radius-Proportionen am Anfang eines Asts
-    private float[] rotate;
-    private float[] rotateV;
-
-    // Größen und Skalierungen des Baums
-    private float scale;
-    private float scaleV;
-
-    private float[] segSplits;
-
-    /* Parameter */
-    private int shape; // Shape-ID
-    private float[] splitAngle;
-    private float[] splitAngleV;
-    private float[] taper;
-    private float zeroBaseSplits;
-
-    // 0...-Werte
-    private float zeroScale;
-    private float zeroScaleV;
-    private float zScale;
-    private float zScaleV;
-    
     // Preset-Helperclass
     private PresetParameters presetParameters;
     private Preset currentPreset;
@@ -75,10 +14,9 @@ public class GeneratorScript : MonoBehaviour {
     // Start is called before the first frame update
     private void Start() {
         presetParameters = new PresetParameters();
-        
-        PresetParameters.setPreset(presetId);
-        setPresetValues();
 
+        currentPreset = presetParameters.getPreset(presetId);
+        
         startWeber(Vector3.zero);
     }
 
@@ -88,15 +26,15 @@ public class GeneratorScript : MonoBehaviour {
     /// <param name="startPosition">initial position of the tree</param>
     private void startWeber(Vector3 startPosition) {
         // Calculating values for stem
-        var scale_tree = HelperFunctions.getScale_tree(scale, scaleV);
-        var length_base = HelperFunctions.getLength_base(baseSize, scale_tree); // Bare area without branches
-        var length_trunk = HelperFunctions.getLength_trunk(length[0], lengthV[0], scale_tree);
-        var radius_trunk = HelperFunctions.getRadius_trunk(length_trunk, ratio, zeroScale);
-        var topRadius = HelperFunctions.getTopRadius(radius_trunk, taper[0]);
-        var length_child_max = HelperFunctions.getLength_child_max(length[1], lengthV[1]);
+        var scale_tree = HelperFunctions.getScale_tree(currentPreset.scale, currentPreset.scaleV);
+        var length_base = HelperFunctions.getLength_base(currentPreset.baseSize, scale_tree); // Bare area without branches
+        var length_trunk = HelperFunctions.getLength_trunk(currentPreset.nLength[0], currentPreset.nLengthV[0], scale_tree);
+        var radius_trunk = HelperFunctions.getRadius_trunk(length_trunk, currentPreset.ratio, currentPreset.zeroScale);
+        var topRadius = HelperFunctions.getTopRadius(radius_trunk, currentPreset.nTaper[0]);
+        var length_child_max = HelperFunctions.getLength_child_max(currentPreset.nLength[1], currentPreset.nLengthV[1]);
         
         // Number of children at stem and vertical distance between them
-        var stems = branches[1];
+        var stems = currentPreset.nBranches[1];
         var distanceBetweenChildren = (length_trunk - length_base) / stems;
             
         // Generating stem-object
@@ -104,7 +42,7 @@ public class GeneratorScript : MonoBehaviour {
             .getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);
         stemObject.name = "Stem";
         
-        var angle = (rotate[1] + Random.Range(-20, 20)) % 360; // Rotation around the stem where next branch is spawned
+        var angle = (currentPreset.nRotate[1] + Random.Range(-20, 20)) % 360; // Rotation around the stem where next branch is spawned
         for (var i = 0; i < stems; i++) {
             // vertical offset of the child
             var start = length_base + distanceBetweenChildren * i;
@@ -112,11 +50,11 @@ public class GeneratorScript : MonoBehaviour {
             position.y = start;
             
             // Calculating child values
-            var length_child = HelperFunctions.getLength_child_base(shape, length_trunk, length_child_max, start, length_base);
+            var length_child = HelperFunctions.getLength_child_base(currentPreset.shape, length_trunk, length_child_max, start, length_base);
             var radius_child = HelperFunctions.getRadius_child(radius_trunk, topRadius, length_child, length_trunk,
-                start, ratioPower);
+                start, currentPreset.ratioPower);
             var numberOfChildren =
-                HelperFunctions.getStems_base(branches[2], length_child, length_trunk, length_child_max);
+                HelperFunctions.getStems_base(currentPreset.nBranches[2], length_child, length_trunk, length_child_max);
 
             // Next iteration of the algorithm, starting with the child-object
             weberIteration(
@@ -133,10 +71,10 @@ public class GeneratorScript : MonoBehaviour {
                 angle,
                 start);
             
-            angle = (angle + (rotate[1] + Random.Range(-20, 20))) % 360; // Next angle around the stem
+            angle = (angle + (currentPreset.nRotate[1] + Random.Range(-20, 20))) % 360; // Next angle around the stem
         }
         
-        print("Number of objects: " + c); // Number of objects spawned
+        print("Number of objects: " + objectCount); // Number of objects spawned
     }
     
     /// <summary>
@@ -168,16 +106,16 @@ public class GeneratorScript : MonoBehaviour {
         float rotateAngle,
         float offset) {
 
-        var topRadius = HelperFunctions.getTopRadius(currentRadius, taper[depth]);
+        var topRadius = HelperFunctions.getTopRadius(currentRadius, currentPreset.nTaper[depth]);
         Vector3 downangle_current;
 
-        if (downAngleV[depth] >= 0) {
-            var angle = HelperFunctions.getDownAnglePositive(downAngle[depth], downAngleV[depth]);
+        if (currentPreset.nDownAngleV[depth] >= 0) {
+            var angle = HelperFunctions.getDownAnglePositive(currentPreset.nDownAngle[depth], currentPreset.nDownAngleV[depth]);
             print(angle);
             downangle_current = new Vector3(0, rotateAngle,  angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
         }
         else {
-            var angle = HelperFunctions.getDownAngleNegative(downAngle[depth], downAngleV[depth], length_parent, offset,
+            var angle = HelperFunctions.getDownAngleNegative(currentPreset.nDownAngle[depth], currentPreset.nDownAngleV[depth], length_parent, offset,
                 length_base);
             print(angle);
             
@@ -190,24 +128,24 @@ public class GeneratorScript : MonoBehaviour {
         branchObject.transform.parent = parent.transform;
         branchObject.name = "Branch " + id;
         
-        c++;
+        objectCount++;
         
      //   if (depth < levels-1) {
         if (depth < 2) {
             var startOffset = currentLength / 10;
             var endOffset = currentLength / 5;
             var distanceBetweenChildren = (currentLength - (startOffset + endOffset)) / numberOfChildren;
-            var angle = 90 + (rotate[depth] + Random.Range(-20, 20)) % 360;
+            var angle = 90 + (currentPreset.nRotate[depth] + Random.Range(-20, 20)) % 360;
         //    int i = 0;
             for (var i = 0; i < numberOfChildren; i++) {
                 var start = startOffset + distanceBetweenChildren * i;
-                var length_child_max = length[depth + 1] + lengthV[depth + 1];
-                var offset_child = currentLength * baseSize;
+                var length_child_max = currentPreset.nLength[depth + 1] + currentPreset.nLengthV[depth + 1];
+                var offset_child = currentLength * currentPreset.baseSize;
                 var length_child = HelperFunctions.getLength_child_iteration(length_child_max, currentLength, offset_child+start);
                 var radius_child = HelperFunctions.getRadius_child(currentRadius, topRadius, length_child,
-                    currentLength, start, ratioPower);
+                    currentLength, start, currentPreset.ratioPower);
 
-                var stems = HelperFunctions.getStems_iteration(branches[depth], offset_child, length_parent);
+                var stems = HelperFunctions.getStems_iteration(currentPreset.nBranches[depth], offset_child, length_parent);
                 var newPosition = startPosition + Vector3.Normalize(branchObject.transform.up) * start;
 
                 weberIteration(
@@ -224,52 +162,8 @@ public class GeneratorScript : MonoBehaviour {
                     angle,
                     offset + start);
             
-                angle = 90 + (angle + (rotate[depth] + Random.Range(-20, 20))) % 360; 
+                angle = 90 + (angle + (currentPreset.nRotate[depth] + Random.Range(-20, 20))) % 360; 
             }
         }
-    }
-
-    /// <summary>
-    /// Sets all values depending on the current preset
-    /// </summary>
-    private void setPresetValues() {
-        shape = PresetParameters.getShape();
-        baseSize = PresetParameters.getBaseSize();
-
-        scale = PresetParameters.getScale()[0];
-        scaleV = PresetParameters.getScaleV()[0];
-        zScale = PresetParameters.getZScale();
-        zScaleV = PresetParameters.getZScaleV();
-
-        levels = PresetParameters.getLevels();
-        ratio = PresetParameters.getRatio();
-        ratioPower = PresetParameters.getRatioPower();
-
-        lobes = PresetParameters.getLobes();
-        lobeDepth = PresetParameters.getLobeDepth();
-        flare = PresetParameters.getFlare();
-
-        zeroScale = PresetParameters.getScale()[1];
-        zeroScaleV = PresetParameters.getScaleV()[1];
-
-        length = PresetParameters.getNLength();
-        lengthV = PresetParameters.getNLengthV();
-        taper = PresetParameters.getNTaper();
-        zeroBaseSplits = PresetParameters.getBaseSplits();
-
-        segSplits = PresetParameters.getNSegSplits();
-        splitAngle = PresetParameters.getNSplitAngle();
-        splitAngleV = PresetParameters.getNSplitAngleV();
-
-        curveRes = PresetParameters.getNCurveRes();
-        curve = PresetParameters.getNCurve();
-        curveBack = PresetParameters.getNCurveBack();
-        curveV = PresetParameters.getNCurveV();
-
-        downAngle = PresetParameters.getNDownAngle();
-        downAngleV = PresetParameters.getNDownAngleV();
-        rotate = PresetParameters.getNRotate();
-        rotateV = PresetParameters.getNRotateV();
-        branches = PresetParameters.getNBranches();
     }
 }
