@@ -1,5 +1,6 @@
 ﻿namespace DefaultNamespace {
     public class Preset {
+        public string name;
         public float baseSize;
         public float flare;
         public int levels;
@@ -31,13 +32,14 @@
         public float zScale;
         public float zscaleV;
 
-        public Preset(int shape,
+        public Preset(string name, int shape,
             float baseSize, float scale, float scaleV, float zScale, float zscaleV, int levels, float ratio,
             float ratioPower, int lobes, float lobeDepth, float flare, float zeroScale, float zeroScaleV,
             float[] nLength, float[] nLengthV, float[] nTaper, int nBaseSplits, float[] nSegSplits,
             float[] nSplitAngle, float[] nSplitAngleV, float[] nCurveRes, float[] nCurve, float[] nCurveBack,
             float[] nCurveV, float[] nDownAngle, float[] nDownAngleV, float[] nRotate, float[] nRotateV,
             int[] nBranches) {
+            this.name = name;
             this.shape = shape;
             this.baseSize = baseSize;
             this.scale = scale;
