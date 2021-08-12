@@ -1,10 +1,13 @@
 ﻿using DefaultNamespace;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GeneratorScript : MonoBehaviour {
     /* Public settings */
     public int presetId = 1;
+    public Canvas overlay;
+    
     private int objectCount = 0;
 
     // Preset-Helperclass
@@ -14,7 +17,6 @@ public class GeneratorScript : MonoBehaviour {
     // Start is called before the first frame update
     private void Start() {
         presetParameters = new PresetParameters();
-
         treePreset = presetParameters.getPreset(presetId);
         
         startWeber(Vector3.zero);
