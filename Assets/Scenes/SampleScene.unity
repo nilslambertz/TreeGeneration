@@ -292,7 +292,7 @@ GameObject:
   - component: {fileID: 893838782}
   - component: {fileID: 893838781}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: BottomBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -727,6 +727,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   presetId: 1
+  overlay: {fileID: 1979630966}
 --- !u!4 &1600221350
 Transform:
   m_ObjectHideFlags: 0
@@ -765,7 +766,7 @@ GameObject:
   - component: {fileID: 1667922210}
   - component: {fileID: 1667922209}
   m_Layer: 5
-  m_Name: Text
+  m_Name: NumberOfObjects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -788,7 +789,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 10, y: 0}
-  m_SizeDelta: {x: 343.8, y: 62}
+  m_SizeDelta: {x: 568.4, y: 62}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1667922209
 MonoBehaviour:
