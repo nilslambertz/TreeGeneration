@@ -5,28 +5,24 @@ using Random = UnityEngine.Random;
 
 public class GeneratorScript : MonoBehaviour {
     /* Public settings */
-    public int presetId = 1;
-    public Canvas overlay;
+    public static int presetId = 1;
     
-    private int objectCount = 0;
+    private static int objectCount = 0;
 
     // Preset-Helperclass
-    private PresetParameters presetParameters;
-    private TreePreset treePreset;
+    private static PresetParameters presetParameters;
+    private static TreePreset treePreset;
 
-    // Start is called before the first frame update
     private void Start() {
-        presetParameters = new PresetParameters();
-        treePreset = presetParameters.getPreset(presetId);
-        
-        startWeber(Vector3.zero);
+      presetParameters = new PresetParameters();
+      treePreset = presetParameters.getPreset(presetId);
     }
 
     /// <summary>
     /// Starts Weber-Penn-algorithm
     /// </summary>
     /// <param name="startPosition">initial position of the tree</param>
-    private void startWeber(Vector3 startPosition) {
+    public static void startWeber(Vector3 startPosition) {
         // Calculating values for stem
         var scale_tree = HelperFunctions.getScale_tree(treePreset.scale, treePreset.scaleV);
         var length_base = HelperFunctions.getLength_base(treePreset.baseSize, scale_tree); // Bare area without branches
@@ -40,8 +36,10 @@ public class GeneratorScript : MonoBehaviour {
         var distanceBetweenChildren = (length_trunk - length_base) / stems;
             
         // Generating stem-object
-        var stemObject = GetComponent<ConeGenerator>()
-            .getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);
+       /* var stemObject = GetComponent<ConeGenerator>()
+            .getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);*/
+       var stemObject =
+           ConeGenerator.getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);
         stemObject.name = "Stem";
         
         var angle = (treePreset.nRotate[1] + Random.Range(-20, 20)) % 360; // Rotation around the stem where next branch is spawned
@@ -94,7 +92,7 @@ public class GeneratorScript : MonoBehaviour {
     /// <param name="length_parent">length of the parent-branch</param>
     /// <param name="rotateAngle">angle around the parent-stem</param>
     /// <param name="offset">offset from the start of the stem</param>
-    private void weberIteration(
+    private static void weberIteration(
         int id,
         GameObject parent,
         int depth, 
@@ -122,7 +120,7 @@ public class GeneratorScript : MonoBehaviour {
             downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
         }
 
-        var branchObject =  GetComponent<ConeGenerator>().getCone(currentRadius, topRadius, currentLength, startPosition,
+        var branchObject = ConeGenerator.getCone(currentRadius, topRadius, currentLength, startPosition,
             Quaternion.Euler(downangle_current));
 
         branchObject.transform.parent = parent.transform;
