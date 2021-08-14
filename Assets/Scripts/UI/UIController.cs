@@ -1,31 +1,17 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UIController : MonoBehaviour {
-    public Transform overlay;
+    private static UIDisplay uiDisplay;
 
-    private Canvas bottomBar;
-    
-    private string numberOfObjectsLabel = "Number of objects: ";
-    private int numberOfObjects;
-    private Text numberOfObjectsText;
-
-    private void Start() {
-        Transform bottomBarChild = overlay.Find("BottomBar");
-        bottomBar = bottomBar.GetComponent<Canvas>();
-        
-        Transform numberOfObjectsChild = bottomBar.transform.Find("NumberOfObjects");
-        numberOfObjectsText = numberOfObjectsChild.GetComponent<Text>();
+    public static void setUIDisplay(UIDisplay ui) {
+        uiDisplay = ui;
     }
 
-    void Update() {
-        numberOfObjectsText.text = numberOfObjectsLabel + numberOfObjects;
-    }
-
-    public void setNumberOfObjects(int numberOfObjects) {
-        this.numberOfObjects = numberOfObjects;
+    public static void setNumberOfObjects(int number) {
+        if (uiDisplay != null) {
+            uiDisplay.setNumberOfObjects(number);
+        }
     }
 }

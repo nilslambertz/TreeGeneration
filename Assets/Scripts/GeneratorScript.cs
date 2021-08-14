@@ -76,7 +76,7 @@ public class GeneratorScript : MonoBehaviour {
             angle = (angle + (treePreset.nRotate[1] + Random.Range(-20, 20))) % 360; // Next angle around the stem
         }
         
-        print("Number of objects: " + objectCount); // Number of objects spawned
+        UIController.setNumberOfObjects(objectCount);
     }
     
     /// <summary>
