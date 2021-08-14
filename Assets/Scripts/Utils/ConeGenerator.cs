@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
 public class ConeGenerator : MonoBehaviour {
-    private const float doublePi = Mathf.PI * 2f;
-    private readonly int numberOfSides = 50;
-    private int[] triangles;
-    private Vector3[] vertices;
+    private static float doublePi = Mathf.PI * 2f;
+    private static readonly int numberOfSides = 50;
+    private static int[] triangles;
+    private static Vector3[] vertices;
 
-    public GameObject getCone(float bottomRadius, float topRadius, float height, Vector3 position,
+    public static GameObject getCone(float bottomRadius, float topRadius, float height, Vector3 position,
         Quaternion rotation) {
         var gameObject = new GameObject();
 
