@@ -523,6 +523,7 @@ GameObject:
   - component: {fileID: 980032453}
   - component: {fileID: 980032454}
   - component: {fileID: 980032455}
+  - component: {fileID: 980032456}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -586,6 +587,22 @@ MonoBehaviour:
   speed: 12
   gravity: -9.81
   jumpHeight: 3
+--- !u!114 &980032456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 980032452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e90c495a2a2b6c146bd93f440a08e005, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  position: {fileID: 963194228}
+  mask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &1154308790
 GameObject:
   m_ObjectHideFlags: 0
@@ -655,7 +672,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1579170063}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -724,8 +741,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3182865b27f0c940961f7908bdb8255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  presetId: 1
-  overlay: {fileID: 1979630966}
 --- !u!4 &1600221350
 Transform:
   m_ObjectHideFlags: 0
