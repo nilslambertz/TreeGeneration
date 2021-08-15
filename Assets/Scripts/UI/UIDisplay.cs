@@ -10,11 +10,11 @@ public class UIDisplay : MonoBehaviour {
     private Canvas bottomBar;
     
     private string numberOfObjectsLabel = "Number of objects: ";
-    private int numberOfObjects;
+    private int numberOfObjects = 0;
     private Text numberOfObjectsText;
 
     private void Start() {
-        Transform bottomBarChild = overlay.Find("BottomBar");
+        Transform bottomBarChild = overlay.Find("TopLeftCanvas");
         bottomBar = bottomBarChild.GetComponent<Canvas>();
         
         Transform numberOfObjectsChild = bottomBar.transform.Find("NumberOfObjects");
@@ -27,8 +27,8 @@ public class UIDisplay : MonoBehaviour {
         
     }
 
-    public void setNumberOfObjects(int num) {
-        numberOfObjects = num;
+    public void addNumberOfObjects(int num) {
+        numberOfObjects += num;
         numberOfObjectsText.text = numberOfObjectsLabel + numberOfObjects;
     }
 }

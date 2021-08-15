@@ -11,7 +11,7 @@ public class UIController : MonoBehaviour {
 
     public static void setNumberOfObjects(int number) {
         if (uiDisplay != null) {
-            uiDisplay.setNumberOfObjects(number);
+            uiDisplay.addNumberOfObjects(number);
         }
     }
 }
