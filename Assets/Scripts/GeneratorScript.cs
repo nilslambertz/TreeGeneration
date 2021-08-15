@@ -43,7 +43,7 @@ public class GeneratorScript : MonoBehaviour {
         stemObject.name = "Stem";
         objectCount++;
         
-        var angle = (treePreset.nRotate[1] + Random.Range(-20, 20)) % 360; // Rotation around the stem where next branch is spawned
+        var angle = UnityEngine.Random.Range(0, 360); // Rotation around the stem where next branch is spawned
         for (var i = 0; i < stems; i++) {
             // vertical offset of the child
             var start = length_base + distanceBetweenChildren * i;
@@ -72,7 +72,7 @@ public class GeneratorScript : MonoBehaviour {
                 angle,
                 start);
             
-            angle = (angle + (treePreset.nRotate[1] + Random.Range(-20, 20))) % 360; // Next angle around the stem
+            angle = (int) (angle + (treePreset.nRotate[1] + Random.Range(-30, 30))) % 360; // Next angle around the stem
         }
         
         UIController.setNumberOfObjects(objectCount);
@@ -136,7 +136,7 @@ public class GeneratorScript : MonoBehaviour {
             var startOffset = currentLength / 10;
             var endOffset = currentLength / 5;
             var distanceBetweenChildren = (currentLength - (startOffset + endOffset)) / numberOfChildren;
-            var angle = 90 + (treePreset.nRotate[depth] + Random.Range(-20, 20)) % 360;
+            var angle = UnityEngine.Random.Range(0, 360);
         //    int i = 0;
             for (var i = 0; i < numberOfChildren; i++) {
                 var start = startOffset + distanceBetweenChildren * i;
@@ -163,7 +163,7 @@ public class GeneratorScript : MonoBehaviour {
                     angle,
                     offset + start);
             
-                angle = 90 + (angle + (treePreset.nRotate[depth] + Random.Range(-20, 20))) % 360; 
+                angle = (int) (90 + (angle + (treePreset.nRotate[depth] + Random.Range(-20, 20))) % 360); 
             }
         }
 
