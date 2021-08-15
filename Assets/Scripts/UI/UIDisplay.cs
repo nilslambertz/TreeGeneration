@@ -13,12 +13,19 @@ public class UIDisplay : MonoBehaviour {
     private int numberOfObjects = 0;
     private Text numberOfObjectsText;
 
+    private string numberOfTreesLabel = "Number of trees: ";
+    private int numberOfTrees = 0;
+    private Text numerOfTreesText;
+
     private void Start() {
         Transform bottomBarChild = overlay.Find("TopLeftCanvas");
         bottomBar = bottomBarChild.GetComponent<Canvas>();
         
         Transform numberOfObjectsChild = bottomBar.transform.Find("NumberOfObjects");
         numberOfObjectsText = numberOfObjectsChild.GetComponent<Text>();
+        
+        Transform numberOfTreesChild = bottomBar.transform.Find("NumberOfTrees");
+        numerOfTreesText = numberOfTreesChild.GetComponent<Text>();
         
         UIController.setUIDisplay(this);
     }
@@ -30,5 +37,10 @@ public class UIDisplay : MonoBehaviour {
     public void addNumberOfObjects(int num) {
         numberOfObjects += num;
         numberOfObjectsText.text = numberOfObjectsLabel + numberOfObjects;
+    }
+
+    public void addOneToNumberOfTrees() {
+        numberOfTrees++;
+        numerOfTreesText.text = numberOfTreesLabel + numberOfTrees;
     }
 }

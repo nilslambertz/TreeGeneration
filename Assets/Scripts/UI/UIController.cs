@@ -14,4 +14,10 @@ public class UIController : MonoBehaviour {
             uiDisplay.addNumberOfObjects(number);
         }
     }
+
+    public static void addOneToNumberOfTrees() {
+        if (uiDisplay != null) {
+            uiDisplay.addOneToNumberOfTrees();
+        }
+    }
 }

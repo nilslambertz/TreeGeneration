@@ -76,6 +76,7 @@ public class GeneratorScript : MonoBehaviour {
         }
         
         UIController.setNumberOfObjects(objectCount);
+        UIController.addOneToNumberOfTrees();
     }
     
     /// <summary>
