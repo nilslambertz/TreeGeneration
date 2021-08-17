@@ -1,4 +1,5 @@
-﻿using DefaultNamespace;
+﻿using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -20,8 +21,9 @@ public class GeneratorScript : MonoBehaviour {
     /// Starts Weber-Penn-algorithm
     /// </summary>
     /// <param name="startPosition">initial position of the tree</param>
-    public static void startWeber(Vector3 startPosition) {
+    public static List<GameObject> startWeber(Vector3 startPosition) {
         int objectCount = 0;
+        List<GameObject> list = new List<GameObject>();
         
         // Calculating values for stem
         var scale_tree = HelperFunctions.getScale_tree(treePreset.scale, treePreset.scaleV);
@@ -58,7 +60,7 @@ public class GeneratorScript : MonoBehaviour {
                 HelperFunctions.getStems_base(treePreset.nBranches[2], length_child, length_trunk, length_child_max);
 
             // Next iteration of the algorithm, starting with the child-object
-            objectCount += weberIteration(
+            List<GameObject> childs = weberIteration(
                 i,
                 stemObject,
                 1, 
@@ -72,11 +74,17 @@ public class GeneratorScript : MonoBehaviour {
                 angle,
                 start);
             
+            list.AddRange(childs);
+            
             angle = (int) (angle + (treePreset.nRotate[1] + Random.Range(-30, 30))) % 360; // Next angle around the stem
         }
+
+        objectCount = list.Count;
         
         UIController.addNumber(UIDisplay.uiTextsEnum.NumberOfObjects, objectCount);
         UIController.addNumber(UIDisplay.uiTextsEnum.NumberOfTrees, 1);
+
+        return list;
     }
     
     /// <summary>
@@ -94,7 +102,7 @@ public class GeneratorScript : MonoBehaviour {
     /// <param name="length_parent">length of the parent-branch</param>
     /// <param name="rotateAngle">angle around the parent-stem</param>
     /// <param name="offset">offset from the start of the stem</param>
-    private static int weberIteration(
+    private static List<GameObject> weberIteration(
         int id,
         GameObject parent,
         int depth, 
@@ -108,6 +116,7 @@ public class GeneratorScript : MonoBehaviour {
         float rotateAngle,
         float offset) {
         int objectCount = 0;
+        List<GameObject> list = new List<GameObject>();
 
         var topRadius = HelperFunctions.getTopRadius(currentRadius, treePreset.nTaper[depth]);
         Vector3 downangle_current;
@@ -125,7 +134,9 @@ public class GeneratorScript : MonoBehaviour {
 
         var branchObject = ConeGenerator.getCone(currentRadius, topRadius, currentLength, startPosition,
             Quaternion.Euler(downangle_current));
+        branchObject.SetActive(false);
         objectCount++;
+        list.Add(branchObject);
 
         branchObject.transform.parent = parent.transform;
         branchObject.name = "Branch " + id;
@@ -149,7 +160,7 @@ public class GeneratorScript : MonoBehaviour {
                 var stems = HelperFunctions.getStems_iteration(treePreset.nBranches[depth], offset_child, length_parent);
                 var newPosition = startPosition + Vector3.Normalize(branchObject.transform.up) * start;
 
-                objectCount += weberIteration(
+                List<GameObject> childs = weberIteration(
                     i,
                     branchObject,
                     depth+1, 
@@ -162,11 +173,13 @@ public class GeneratorScript : MonoBehaviour {
                     currentLength, 
                     angle,
                     offset + start);
+                
+                list.AddRange(childs);
             
                 angle = (int) (90 + (angle + (treePreset.nRotate[depth] + Random.Range(-20, 20))) % 360); 
             }
         }
 
-        return objectCount;
+        return list;
     }
 }

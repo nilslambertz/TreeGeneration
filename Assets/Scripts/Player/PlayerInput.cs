@@ -10,6 +10,8 @@ public class PlayerInput : MonoBehaviour {
     private GameObject circle;
     private bool circleHidden = true;
 
+    private List<GameObject> gameObjectList;
+
     private void Start() {
         circle =  GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         circle.transform.localScale = new Vector3(1, 0.1f, 1);
@@ -31,7 +33,20 @@ public class PlayerInput : MonoBehaviour {
         };
         
         if (Input.GetMouseButtonDown(0)) {
-            GeneratorScript.startWeber(hit.point);
+            gameObjectList = GeneratorScript.startWeber(hit.point);
+
+            var repeatRate = 10f / gameObjectList.Count;
+            InvokeRepeating("renderBranches", 1f, repeatRate);
         }
+    }
+
+    private void renderBranches() {
+        if (gameObjectList.Count == 0) {
+            CancelInvoke("renderBranches");
+            return;
+        }
+        
+        gameObjectList[0].SetActive(true);
+        gameObjectList.RemoveAt(0);
     }
 }
