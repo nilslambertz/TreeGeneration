@@ -75,8 +75,8 @@ public class GeneratorScript : MonoBehaviour {
             angle = (int) (angle + (treePreset.nRotate[1] + Random.Range(-30, 30))) % 360; // Next angle around the stem
         }
         
-        UIController.setNumberOfObjects(objectCount);
-        UIController.addOneToNumberOfTrees();
+        UIController.addNumber(UIDisplay.uiTextsEnum.NumberOfObjects, objectCount);
+        UIController.addNumber(UIDisplay.uiTextsEnum.NumberOfTrees, 1);
     }
     
     /// <summary>

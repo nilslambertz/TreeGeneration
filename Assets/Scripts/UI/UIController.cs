@@ -9,15 +9,14 @@ public class UIController : MonoBehaviour {
         uiDisplay = ui;
     }
 
-    public static void setNumberOfObjects(int number) {
+    public static void setNumber(UIDisplay.uiTextsEnum e, int number) {
         if (uiDisplay != null) {
-            uiDisplay.addNumberOfObjects(number);
+            uiDisplay.setNumber(e, number);
         }
     }
-
-    public static void addOneToNumberOfTrees() {
+    public static void addNumber(UIDisplay.uiTextsEnum e, int number) {
         if (uiDisplay != null) {
-            uiDisplay.addOneToNumberOfTrees();
+            uiDisplay.addNumber(e, number);
         }
     }
 }
