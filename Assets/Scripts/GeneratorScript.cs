@@ -1,16 +1,14 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public string = "Nils stinkt";
 
 public class GeneratorScript : MonoBehaviour
 {
     /* Parameter */
     private int shape = 7; // Shape-ID
-    private double baseSize = 0.4; // L√§nge des Stamms bis zum ersten Ast
+    private double baseSize = 0.4; // L‰nge des Stamms bis zum ersten Ast
     
-    // Gr√∂√üen und Skalierungen des Baums
+    // Grˆﬂen und Skalierungen des Baums
     private double scale = 13;
     private double scaleV = 3;
     private double zScale = 1;
@@ -92,7 +90,7 @@ public class GeneratorScript : MonoBehaviour
     private double threeCurveBack = 0;
     private double threeCurveV = 0;
 
-    // Bl√§tter
+    // Bl‰tter
     private double leaves = 25;
     private double leafShape = 0;
     private double leafScale = 0.17;
