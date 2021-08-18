@@ -10,7 +10,7 @@ public class PlayerInput : MonoBehaviour {
     private GameObject circle;
     private bool circleHidden = true;
 
-    private List<GameObject> gameObjectList;
+    private List<GameObject> gameObjectList = new List<GameObject>();
 
     private void Start() {
         circle =  GameObject.CreatePrimitive(PrimitiveType.Cylinder);
@@ -33,9 +33,9 @@ public class PlayerInput : MonoBehaviour {
         };
         
         if (Input.GetMouseButtonDown(0)) {
-            gameObjectList = GeneratorScript.startWeber(hit.point);
+            gameObjectList.AddRange(GeneratorScript.startWeber(hit.point));
 
-            var repeatRate = 10f / gameObjectList.Count;
+            var repeatRate = 5f / gameObjectList.Count;
             InvokeRepeating("renderBranches", 1f, repeatRate);
         }
     }
