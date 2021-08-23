@@ -29,10 +29,16 @@ public class PlayerInput : MonoBehaviour {
                 circle.transform.position = hit.point;
 
                 if (Input.GetMouseButtonDown(0)) {
-                    gameObjectList.AddRange(GeneratorScript.startWeber(hit.point));
+                    if (gameObjectList.Count != 0) {
+                        CancelInvoke("renderBranches");
+                        foreach (GameObject g in gameObjectList) {
+                            g.SetActive(true);
+                        }
+                    }
+                    gameObjectList = GeneratorScript.startWeber(hit.point);
 
                     var repeatRate = 5f / gameObjectList.Count;
-                    InvokeRepeating("renderBranches", 1f, repeatRate);
+                    InvokeRepeating("renderBranches", 0.5f, repeatRate);
                 }
             } else {
                 circleHidden = true;
