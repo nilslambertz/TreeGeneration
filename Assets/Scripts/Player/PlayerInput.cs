@@ -20,22 +20,24 @@ public class PlayerInput : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (Physics.Raycast(position.position, position.forward, out var hit, Mathf.Infinity, mask)) {
-            if (circleHidden) {
-                circle.SetActive(true);
-            }
+        if (!PauseMenu.gamePaused) {
+            if (Physics.Raycast(position.position, position.forward, out var hit, Mathf.Infinity, mask)) {
+                if (circleHidden) {
+                    circle.SetActive(true);
+                }
 
-            circle.transform.position = hit.point;
-        } else {
-            circleHidden = true;
-            circle.SetActive(false);
-        };
+                circle.transform.position = hit.point;
 
-        if (Input.GetMouseButtonDown(0)) {
-            gameObjectList.AddRange(GeneratorScript.startWeber(hit.point));
+                if (Input.GetMouseButtonDown(0)) {
+                    gameObjectList.AddRange(GeneratorScript.startWeber(hit.point));
 
-            var repeatRate = 5f / gameObjectList.Count;
-            InvokeRepeating("renderBranches", 1f, repeatRate);
+                    var repeatRate = 5f / gameObjectList.Count;
+                    InvokeRepeating("renderBranches", 1f, repeatRate);
+                }
+            } else {
+                circleHidden = true;
+                circle.SetActive(false);
+            };
         }
     }
 
