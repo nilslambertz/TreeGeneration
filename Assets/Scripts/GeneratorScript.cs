@@ -13,8 +13,8 @@ public class GeneratorScript : MonoBehaviour {
     private static TreePreset treePreset;
 
     private void Start() {
-      presetParameters = new PresetParameters();
-      treePreset = presetParameters.getPreset(presetId);
+        presetParameters = new PresetParameters();
+        treePreset = presetParameters.getPreset(presetId);
     }
 
     /// <summary>
@@ -24,7 +24,7 @@ public class GeneratorScript : MonoBehaviour {
     public static List<GameObject> startWeber(Vector3 startPosition) {
         int objectCount = 0;
         List<GameObject> list = new List<GameObject>();
-        
+
         // Calculating values for stem
         var scale_tree = HelperFunctions.getScale_tree(treePreset.scale, treePreset.scaleV);
         var length_base = HelperFunctions.getLength_base(treePreset.baseSize, scale_tree); // Bare area without branches
@@ -32,26 +32,26 @@ public class GeneratorScript : MonoBehaviour {
         var radius_trunk = HelperFunctions.getRadius_trunk(length_trunk, treePreset.ratio, treePreset.zeroScale);
         var topRadius = HelperFunctions.getTopRadius(radius_trunk, treePreset.nTaper[0]);
         var length_child_max = HelperFunctions.getLength_child_max(treePreset.nLength[1], treePreset.nLengthV[1]);
-        
+
         // Number of children at stem and vertical distance between them
         var stems = treePreset.nBranches[1];
         var distanceBetweenChildren = (length_trunk - length_base) / stems;
-            
+
         // Generating stem-object
-       /* var stemObject = GetComponent<ConeGenerator>()
-            .getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);*/
-       var stemObject =
-           ConeGenerator.getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);
+        /* var stemObject = GetComponent<ConeGenerator>()
+             .getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);*/
+        var stemObject =
+            ConeGenerator.getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);
         stemObject.name = "Stem";
         objectCount++;
-        
+
         var angle = UnityEngine.Random.Range(0, 360); // Rotation around the stem where next branch is spawned
         for (var i = 0; i < stems; i++) {
             // vertical offset of the child
             var start = length_base + distanceBetweenChildren * i;
             Vector3 position = startPosition;
             position.y = start;
-            
+
             // Calculating child values
             var length_child = HelperFunctions.getLength_child_base(treePreset.shape, length_trunk, length_child_max, start, length_base);
             var radius_child = HelperFunctions.getRadius_child(radius_trunk, topRadius, length_child, length_trunk,
@@ -63,30 +63,30 @@ public class GeneratorScript : MonoBehaviour {
             List<GameObject> childs = weberIteration(
                 i,
                 stemObject,
-                1, 
+                1,
                 numberOfChildren,
-                position, 
-                radius_child, 
-                length_child, 
-                radius_trunk, 
-                length_base, 
-                length_trunk, 
+                position,
+                radius_child,
+                length_child,
+                radius_trunk,
+                length_base,
+                length_trunk,
                 angle,
                 start);
-            
+
             list.AddRange(childs);
-            
-            angle = (int) (angle + (treePreset.nRotate[1] + Random.Range(-30, 30))) % 360; // Next angle around the stem
+
+            angle = (int)(angle + (treePreset.nRotate[1] + Random.Range(-30, 30))) % 360; // Next angle around the stem
         }
 
         objectCount = list.Count;
-        
+
         UIController.addNumber(UIDisplay.uiTextsEnum.NumberOfObjects, objectCount);
         UIController.addNumber(UIDisplay.uiTextsEnum.NumberOfTrees, 1);
 
         return list;
     }
-    
+
     /// <summary>
     /// Iteration of the Weber-Penn-algorithm
     /// </summary>
@@ -105,14 +105,14 @@ public class GeneratorScript : MonoBehaviour {
     private static List<GameObject> weberIteration(
         int id,
         GameObject parent,
-        int depth, 
+        int depth,
         int numberOfChildren,
         Vector3 startPosition,
         float currentRadius,
         float currentLength,
         float prevRadius,
-        float length_base, 
-        float length_parent, 
+        float length_base,
+        float length_parent,
         float rotateAngle,
         float offset) {
         int objectCount = 0;
@@ -123,12 +123,11 @@ public class GeneratorScript : MonoBehaviour {
 
         if (treePreset.nDownAngleV[depth] >= 0) {
             var angle = HelperFunctions.getDownAnglePositive(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth]);
-            downangle_current = new Vector3(0, rotateAngle,  angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
-        }
-        else {
+            downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
+        } else {
             var angle = HelperFunctions.getDownAngleNegative(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth], length_parent, offset,
                 length_base);
-            
+
             downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
         }
 
@@ -140,20 +139,20 @@ public class GeneratorScript : MonoBehaviour {
 
         branchObject.transform.parent = parent.transform;
         branchObject.name = "Branch " + id;
-        
-        
-     //   if (depth < levels-1) {
+
+
+        //   if (depth < levels-1) {
         if (depth < 2) {
             var startOffset = currentLength / 10;
             var endOffset = currentLength / 5;
             var distanceBetweenChildren = (currentLength - (startOffset + endOffset)) / numberOfChildren;
             var angle = UnityEngine.Random.Range(0, 360);
-        //    int i = 0;
+            //    int i = 0;
             for (var i = 0; i < numberOfChildren; i++) {
                 var start = startOffset + distanceBetweenChildren * i;
                 var length_child_max = treePreset.nLength[depth + 1] + treePreset.nLengthV[depth + 1];
                 var offset_child = currentLength * treePreset.baseSize;
-                var length_child = HelperFunctions.getLength_child_iteration(length_child_max, currentLength, offset_child+start);
+                var length_child = HelperFunctions.getLength_child_iteration(length_child_max, currentLength, offset_child + start);
                 var radius_child = HelperFunctions.getRadius_child(currentRadius, topRadius, length_child,
                     currentLength, start, treePreset.ratioPower);
 
@@ -163,20 +162,20 @@ public class GeneratorScript : MonoBehaviour {
                 List<GameObject> childs = weberIteration(
                     i,
                     branchObject,
-                    depth+1, 
+                    depth + 1,
                     stems,
-                    newPosition, 
-                    radius_child, 
-                    length_child, 
-                    currentRadius, 
-                    length_base, 
-                    currentLength, 
+                    newPosition,
+                    radius_child,
+                    length_child,
+                    currentRadius,
+                    length_base,
+                    currentLength,
                     angle,
                     offset + start);
-                
+
                 list.AddRange(childs);
-            
-                angle = (int) (90 + (angle + (treePreset.nRotate[depth] + Random.Range(-20, 20))) % 360); 
+
+                angle = (int)(90 + (angle + (treePreset.nRotate[depth] + Random.Range(-20, 20))) % 360);
             }
         }
 

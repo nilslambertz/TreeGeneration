@@ -21,7 +21,7 @@ public class UIDisplay : MonoBehaviour {
     };
 
     private bool changed = false;
-    
+
     public Transform overlay;
 
     private Text uiText;
@@ -41,7 +41,7 @@ public class UIDisplay : MonoBehaviour {
         if (changed) {
             updateUiText();
             changed = false;
-        } 
+        }
     }
 
     private void updateUiText() {
@@ -54,12 +54,12 @@ public class UIDisplay : MonoBehaviour {
     }
 
     public void setNumber(uiTextsEnum e, int number) {
-        uiNumbers[(int) e] = number;
+        uiNumbers[(int)e] = number;
         changed = true;
     }
 
     public void addNumber(uiTextsEnum e, int number) {
-        uiNumbers[(int) e] += number;
+        uiNumbers[(int)e] += number;
         changed = true;
     }
 }

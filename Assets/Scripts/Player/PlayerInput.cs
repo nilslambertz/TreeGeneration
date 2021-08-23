@@ -13,7 +13,7 @@ public class PlayerInput : MonoBehaviour {
     private List<GameObject> gameObjectList = new List<GameObject>();
 
     private void Start() {
-        circle =  GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        circle = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         circle.transform.localScale = new Vector3(1, 0.1f, 1);
         circle.GetComponent<Renderer>().material.color = Color.red;
     }
@@ -24,14 +24,13 @@ public class PlayerInput : MonoBehaviour {
             if (circleHidden) {
                 circle.SetActive(true);
             }
-            
+
             circle.transform.position = hit.point;
-        }
-        else {
+        } else {
             circleHidden = true;
             circle.SetActive(false);
         };
-        
+
         if (Input.GetMouseButtonDown(0)) {
             gameObjectList.AddRange(GeneratorScript.startWeber(hit.point));
 
@@ -45,7 +44,7 @@ public class PlayerInput : MonoBehaviour {
             CancelInvoke("renderBranches");
             return;
         }
-        
+
         gameObjectList[0].SetActive(true);
         gameObjectList.RemoveAt(0);
     }

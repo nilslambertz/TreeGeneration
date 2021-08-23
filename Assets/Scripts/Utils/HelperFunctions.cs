@@ -1,7 +1,6 @@
 ﻿using System;
 
-namespace DefaultNamespace
-{
+namespace DefaultNamespace {
     public class HelperFunctions {
 
         /* Scale */
@@ -46,7 +45,7 @@ namespace DefaultNamespace
         public static float getLength_child_max(float nLength, float nLengthV) {
             return nLength + nLengthV;
         }
-        
+
         /// <summary>
         /// Calculates length of a child of stem (Page 3 in the paper)
         /// </summary>
@@ -98,7 +97,7 @@ namespace DefaultNamespace
         public static float getRadius_child(float radius_parent_bottom, float radius_parent_top, float length_child, float length_parent, float offset_child,
             float ratioPower) {
             float radius = radius_parent_bottom - (radius_parent_bottom - radius_parent_top) * (offset_child / length_parent);
-            return radius * (float) Math.Pow(length_child / length_parent, ratioPower);
+            return radius * (float)Math.Pow(length_child / length_parent, ratioPower);
         }
 
         /// <summary>
@@ -110,7 +109,7 @@ namespace DefaultNamespace
         public static float getTopRadius(float radius_bottom, float taper) {
             return radius_bottom * (taper <= 1 && taper >= 0 ? (1 - taper) : 0.5f);
         }
-        
+
         /* Stems */
         /// <summary>
         /// Calculates number of children, that every branch at the first level will have (grandchildren of stem) (Page 3 in the paper)
@@ -121,7 +120,7 @@ namespace DefaultNamespace
         /// <param name="length_child_max">length_child_max</param>
         /// <returns>number of grandchildren of stem</returns>
         public static int getStems_base(float stems_max, float length_child, float length_parent, float length_child_max) {
-            return (int) (stems_max * (0.2f + 0.8f * (length_child / length_parent) / length_child_max));
+            return (int)(stems_max * (0.2f + 0.8f * (length_child / length_parent) / length_child_max));
         }
 
         /// <summary>
@@ -132,9 +131,9 @@ namespace DefaultNamespace
         /// <param name="length_parent">length_parent</param>
         /// <returns>number of grandchildren of branch</returns>
         public static int getStems_iteration(float stems_max, float offset_child, float length_parent) {
-            return (int) (stems_max * (1.0f - 0.5f * offset_child / length_parent));
+            return (int)(stems_max * (1.0f - 0.5f * offset_child / length_parent));
         }
-        
+
         /* DownAngle */
         /// <summary>
         /// Calculates the downAngle, if nDownAngleV is positive (Page 4 in the paper)
@@ -145,7 +144,7 @@ namespace DefaultNamespace
         public static float getDownAnglePositive(float nDownAngle, float nDownAngleV) {
             return nDownAngle + nDownAngleV;
         }
-        
+
         /// <summary>
         /// Calculates the downAngle, if nDownAngleV is negative (Page 4 in the paper)
         /// </summary>
@@ -170,21 +169,21 @@ namespace DefaultNamespace
         public static float ShapeRatio(int currentShape, float ratioValue) {
             switch (currentShape) {
                 case 0: return 0.2f + 0.8f * ratioValue;
-                case 1: return 0.2f + 0.8f * (float) Math.Sin(Math.PI * ratioValue);
-                case 2: return 0.2f + 0.8f * (float) Math.Sin(0.5 * Math.PI * ratioValue);
+                case 1: return 0.2f + 0.8f * (float)Math.Sin(Math.PI * ratioValue);
+                case 2: return 0.2f + 0.8f * (float)Math.Sin(0.5 * Math.PI * ratioValue);
                 case 3: return 1.0f;
                 case 4: return 0.5f + 0.5f * ratioValue;
                 case 5: {
-                    if (ratioValue <= 0.7f) return ratioValue / 0.7f;
+                        if (ratioValue <= 0.7f) return ratioValue / 0.7f;
 
-                    return (1.0f - ratioValue) / 0.3f;
-                }
+                        return (1.0f - ratioValue) / 0.3f;
+                    }
                 case 6: return 1.0f - 0.8f * ratioValue;
                 case 7: {
-                    if (ratioValue <= 0.7f) return 0.5f + 0.5f * ratioValue / 0.7f;
+                        if (ratioValue <= 0.7f) return 0.5f + 0.5f * ratioValue / 0.7f;
 
-                    return 0.5f + 0.5f * (1.0f - ratioValue) / 0.3f;
-                }
+                        return 0.5f + 0.5f * (1.0f - ratioValue) / 0.3f;
+                    }
             }
 
             return -1f;
