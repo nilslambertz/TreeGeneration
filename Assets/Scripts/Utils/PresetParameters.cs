@@ -5,7 +5,7 @@ namespace DefaultNamespace {
 
         private static List<TreePreset> presetList = new List<TreePreset>();
 
-        public PresetParameters() {
+        public static void initialisePresets() {
             TreePreset quakingAspen = new TreePreset("Quaking Aspen",
                 7, 0.4f, 13, 3, 1, 0,
                 3, 0.015f, 1.2f, 5, 0.07f,
@@ -64,7 +64,7 @@ namespace DefaultNamespace {
             presetList.Add(blackOak);
         }
 
-        public TreePreset getPreset(int index) {
+        public static TreePreset getPreset(int index) {
             if (index < presetList.Count) {
                 return presetList[index];
             }
@@ -72,11 +72,15 @@ namespace DefaultNamespace {
             return null;
         }
 
-        private float map(float x, float in_min, float in_max, float out_min, float out_max) {
+        public static List<TreePreset> getPresetList() {
+            return presetList;
+        }
+
+        private static float map(float x, float in_min, float in_max, float out_min, float out_max) {
             return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
         }
 
-        public void createTreePresetFromSimpleParameters(float baseSizeParam) {
+        public static void createTreePresetFromSimpleParameters(float baseSizeParam) {
             float baseSize = baseSizeParam;
 
             TreePreset tree = new TreePreset("Preset " + (presetList.Count + 1),

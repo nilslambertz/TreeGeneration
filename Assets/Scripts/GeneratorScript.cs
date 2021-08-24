@@ -9,12 +9,11 @@ public class GeneratorScript : MonoBehaviour {
     public static int presetId = 1;
 
     // Preset-Helperclass
-    private static PresetParameters presetParameters;
     private static TreePreset treePreset;
 
     private void Start() {
-        presetParameters = new PresetParameters();
-        treePreset = presetParameters.getPreset(presetId);
+        PresetParameters.initialisePresets();
+        treePreset = PresetParameters.getPreset(presetId);
     }
 
     /// <summary>

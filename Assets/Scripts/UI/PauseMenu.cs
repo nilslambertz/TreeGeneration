@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using DefaultNamespace;
 
 public class PauseMenu : MonoBehaviour {
 
@@ -14,7 +16,17 @@ public class PauseMenu : MonoBehaviour {
 
     public GameObject debugOverlay;
 
-    // Update is called once per frame
+    public GameObject presetScrollList;
+
+
+    public GameObject buttonPrefab;
+    private List<TreePreset> presetList;
+
+    void Start() {
+        PresetParameters.initialisePresets();
+        updatePresetList();
+    }
+
     void Update() {
         if (Input.GetKeyDown(KeyCode.Escape)) {
             if (gamePaused) {
@@ -22,6 +34,15 @@ public class PauseMenu : MonoBehaviour {
             } else {
                 pause();
             }
+        }
+    }
+
+    private void updatePresetList() {
+        presetList = PresetParameters.getPresetList();
+        for (int i = 0; i < presetList.Count; i++) {
+            GameObject obj = Instantiate(buttonPrefab);
+            obj.transform.SetParent(presetScrollList.transform, false);
+            print("187");
         }
     }
 
