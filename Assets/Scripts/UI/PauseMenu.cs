@@ -8,6 +8,12 @@ public class PauseMenu : MonoBehaviour {
 
     public GameObject pauseMenuOverlay;
 
+    public GameObject buttonContainer;
+
+    public GameObject presetContainer;
+
+    public GameObject debugOverlay;
+
     // Update is called once per frame
     void Update() {
         if (Input.GetKeyDown(KeyCode.Escape)) {
@@ -21,6 +27,9 @@ public class PauseMenu : MonoBehaviour {
 
     public void resume() {
         pauseMenuOverlay.SetActive(false);
+        buttonContainer.SetActive(true);
+        presetContainer.SetActive(false);
+        debugOverlay.SetActive(true);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         Time.timeScale = 1f;
@@ -28,11 +37,19 @@ public class PauseMenu : MonoBehaviour {
     }
 
     void pause() {
+        debugOverlay.SetActive(false);
+        buttonContainer.SetActive(true);
+        presetContainer.SetActive(false);
         pauseMenuOverlay.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 0;
         gamePaused = true;
+    }
+
+    public void togglePresetMenu() {
+        buttonContainer.SetActive(!buttonContainer.activeSelf);
+        presetContainer.SetActive(!presetContainer.activeSelf);
     }
 
     public void quitGame() {

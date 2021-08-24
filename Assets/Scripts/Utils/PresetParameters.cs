@@ -71,5 +71,28 @@ namespace DefaultNamespace {
 
             return null;
         }
+
+        private float map(float x, float in_min, float in_max, float out_min, float out_max) {
+            return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+        }
+
+        public void createTreePresetFromSimpleParameters(float baseSizeParam) {
+            float baseSize = baseSizeParam;
+
+            TreePreset tree = new TreePreset("Preset " + (presetList.Count + 1),
+                4, 0.2f, 23, 5, 1, 0,
+                4, 0.015f, 1.3f, 3, 0.1f,
+                1f, 1, 0, new[] { 1, 0.3f, 0.6f, 0.4f },
+                new[] { 0f, 0.05f, 0.1f, 0 }, new[] { 1.1f, 1, 1, 1 },
+                0, new[] { 0f, 0, 0, 0 }, new[] { 0f, 0, 0, 0 },
+                new[] { 0f, 0, 0, 0 }, new[] { 10f, 10, 10, 1 },
+                new[] { 0f, 0, -10, 0 }, new[] { 0f, 0, 0, 0 },
+                new[] { 40f, 90, 150, 0 }, new[] { 0f, 60, 30, 45 },
+                new[] { 0f, -40, 10, 10 }, new[] { 0f, 140, 140, 140 },
+                new[] { 0f, 0, 0, 0 }, new[] { 0, 50, 25, 12 }
+            );
+
+            presetList.Add(tree);
+        }
     }
 }
