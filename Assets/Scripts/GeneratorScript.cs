@@ -8,10 +8,6 @@ public class GeneratorScript : MonoBehaviour {
     // Preset
     private static TreePreset treePreset;
 
-    private void Start() {
-        PresetParameters.initialisePresets();
-    }
-
     /// <summary>
     /// Starts Weber-Penn-algorithm
     /// </summary>

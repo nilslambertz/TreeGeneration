@@ -5,19 +5,36 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PresetListScript : MonoBehaviour {
-    private GameObject buttonTemplate;
+    public GameObject buttonTemplate;
     void Start() {
-        buttonTemplate = this.transform.GetChild(0).gameObject;
+        updateList();
+    }
+
+    void updateList() {
+        foreach (Transform child in this.transform) {
+            Destroy(child.gameObject);
+        }
 
         GameObject currentButton;
         List<TreePreset> presetList = PresetParameters.getPresetList();
         foreach (TreePreset preset in presetList) {
             currentButton = Instantiate(buttonTemplate, this.transform);
-            currentButton.transform.GetChild(0).GetComponent<Text>().text = preset.name;
+            string buttonText = preset.name;
             if (SharedValues.getCurrentPreset().id == preset.id) {
-                currentButton.GetComponent<Button>().interactable = false;
+                currentButton.transform.GetChild(0).GetComponent<Text>().fontStyle = FontStyle.Bold;
+                buttonText = "> " + buttonText + " <";
             }
+            currentButton.transform.GetChild(0).GetComponent<Text>().text = buttonText;
+            currentButton.GetComponent<Button>().onClick.AddListener(delegate () {
+                buttonClicked(preset.id);
+            });
+            currentButton.SetActive(true);
         }
-        Destroy(buttonTemplate);
+    }
+
+
+    void buttonClicked(int id) {
+        SharedValues.setPreset(id);
+        updateList();
     }
 }

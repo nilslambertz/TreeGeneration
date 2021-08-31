@@ -67,6 +67,9 @@ namespace DefaultNamespace {
         }
 
         public static TreePreset getPreset(int index) {
+            if (presetList == null) {
+                initialisePresets();
+            }
             if (index < presetList.Count) {
                 return presetList[index];
             }

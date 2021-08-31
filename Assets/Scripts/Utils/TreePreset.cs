@@ -1,7 +1,7 @@
 ﻿namespace DefaultNamespace {
 
     public class TreePreset {
-        private static int idCount;
+        private static int idCount = 0;
 
         public int id;
 
