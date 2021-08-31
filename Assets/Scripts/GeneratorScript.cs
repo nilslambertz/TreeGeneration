@@ -5,15 +5,11 @@ using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GeneratorScript : MonoBehaviour {
-    /* Public settings */
-    public static int presetId = 1;
-
-    // Preset-Helperclass
+    // Preset
     private static TreePreset treePreset;
 
     private void Start() {
         PresetParameters.initialisePresets();
-        treePreset = PresetParameters.getPreset(presetId);
     }
 
     /// <summary>
@@ -21,6 +17,8 @@ public class GeneratorScript : MonoBehaviour {
     /// </summary>
     /// <param name="startPosition">initial position of the tree</param>
     public static List<GameObject> startWeber(Vector3 startPosition) {
+        treePreset = SharedValues.getCurrentPreset();
+
         int objectCount = 0;
         List<GameObject> list = new List<GameObject>();
 
