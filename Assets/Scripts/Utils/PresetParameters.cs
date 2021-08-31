@@ -3,9 +3,11 @@
 namespace DefaultNamespace {
     public class PresetParameters {
 
-        private static List<TreePreset> presetList = new List<TreePreset>();
+        private static List<TreePreset> presetList;
 
         public static void initialisePresets() {
+            presetList = new List<TreePreset>();
+
             TreePreset quakingAspen = new TreePreset("Quaking Aspen",
                 7, 0.4f, 13, 3, 1, 0,
                 3, 0.015f, 1.2f, 5, 0.07f,
@@ -73,6 +75,9 @@ namespace DefaultNamespace {
         }
 
         public static List<TreePreset> getPresetList() {
+            if (presetList == null) {
+                initialisePresets();
+            }
             return presetList;
         }
 

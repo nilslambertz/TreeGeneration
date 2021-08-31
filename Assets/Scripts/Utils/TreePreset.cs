@@ -1,5 +1,10 @@
 ﻿namespace DefaultNamespace {
+
     public class TreePreset {
+        private static int idCount;
+
+        public int id;
+
         public string name;
         public float baseSize;
         public float flare;
@@ -39,6 +44,7 @@
             float[] nSplitAngle, float[] nSplitAngleV, float[] nCurveRes, float[] nCurve, float[] nCurveBack,
             float[] nCurveV, float[] nDownAngle, float[] nDownAngleV, float[] nRotate, float[] nRotateV,
             int[] nBranches) {
+            this.id = idCount++;
             this.name = name;
             this.shape = shape;
             this.baseSize = baseSize;

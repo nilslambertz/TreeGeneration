@@ -39,11 +39,11 @@ public class PauseMenu : MonoBehaviour {
 
     private void updatePresetList() {
         presetList = PresetParameters.getPresetList();
-        for (int i = 0; i < presetList.Count; i++) {
+        /*for (int i = 0; i < presetList.Count; i++) {
             GameObject obj = Instantiate(buttonPrefab);
             obj.transform.SetParent(presetScrollList.transform, false);
             print("187");
-        }
+        }*/
     }
 
     public void resume() {
