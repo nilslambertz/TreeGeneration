@@ -1,125 +1,177 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
-public string = "Nils stinkt";
+public class GeneratorScript : MonoBehaviour {
+    // Preset
+    private static TreePreset treePreset;
 
-public class GeneratorScript : MonoBehaviour
-{
-    /* Parameter */
-    private int shape = 7; // Shape-ID
-    private double baseSize = 0.4; // Länge des Stamms bis zum ersten Ast
-    
-    // Größen und Skalierungen des Baums
-    private double scale = 13;
-    private double scaleV = 3;
-    private double zScale = 1;
-    private double zScaleV = 0;
+    /// <summary>
+    /// Starts Weber-Penn-algorithm
+    /// </summary>
+    /// <param name="startPosition">initial position of the tree</param>
+    public static List<GameObject> startWeber(Vector3 startPosition) {
+        treePreset = SharedValues.getCurrentPreset();
 
-    private int levels = 3; // Rekursionstiefe
-    private double ratio = 0.015; // Normalisierter Radius
-    private double ratioPower = 1.2; // Radius-Proportionen am Anfang eines Asts
+        int objectCount = 0;
+        List<GameObject> list = new List<GameObject>();
 
-    // ??
-    private int lobes = 5;
-    private double lobeDepth = 0.07;
+        // Calculating values for stem
+        var scale_tree = HelperFunctions.getScale_tree(treePreset.scale, treePreset.scaleV);
+        var length_base = HelperFunctions.getLength_base(treePreset.baseSize, scale_tree); // Bare area without branches
+        var length_trunk = HelperFunctions.getLength_trunk(treePreset.nLength[0], treePreset.nLengthV[0], scale_tree);
+        var radius_trunk = HelperFunctions.getRadius_trunk(length_trunk, treePreset.ratio, treePreset.zeroScale);
+        var topRadius = HelperFunctions.getTopRadius(radius_trunk, treePreset.nTaper[0]);
+        var length_child_max = HelperFunctions.getLength_child_max(treePreset.nLength[1], treePreset.nLengthV[1]);
 
-    private double flare = 0.6; // Exponentielle Expansion vom Stamm aus
-    
-    // 0...-Werte
-    private double zeroScale = 1;
-    private double zeroScaleV = 0;
-    private double zeroLength = 1;
-    private double zeroLengthV = 0;
-    private double zeroTaper = 1;
-    private double zeroBaseSplits = 0;
-    private double zeroSegSplits = 0;
-    private double zeroSplitAngle = 0;
-    private double zeroSplitAngleV = 0;
-    private double zeroCurveRes = 3;
-    private double zeroCurve = 0;
-    private double zeroCurveBack = 0;
-    private double zeroCurveV = 20;
+        // Number of children at stem and vertical distance between them
+        var stems = treePreset.nBranches[1];
+        var distanceBetweenChildren = (length_trunk - length_base) / stems;
 
-    // 1...-Werte
-    private double oneDownAngle = 60;
-    private double oneDownAngleV = -50;
-    private double oneRotate = 140;
-    private double oneRotateV = 0;
-    private double oneBranches = 50;
-    private double oneLength = 0.3;
-    private double oneLengthV = 0;
-    private double oneTaper = 1;
-    private double oneSegSplits = 0;
-    private double oneSplitAngle = 0;
-    private double oneSplitAngleV = 0;
-    private double oneCurveRes = 5;
-    private double oneCurve = -40;
-    private double oneCurveBack = 0;
-    private double oneCurveV = 50;
-    
-    // 2...-Werte
-    private double twoDownAngle = 45;
-    private double twoDownAngleV = 10;
-    private double twoRotate = 140;
-    private double twoRotateV = 0;
-    private double twoBranches = 30;
-    private double twoLength = 0.6;
-    private double twoLengthV = 0;
-    private double twoTaper = 1;
-    private double twoSegSplits = 0;
-    private double twoSplitAngle = 0;
-    private double twoSplitAngleV = 0;
-    private double twoCurveRes = 3;
-    private double twoCurve = -40;
-    private double twoCurveBack = 0;
-    private double twoCurveV = 75;
-    
-    // 3...-Werte
-    private double threeDownAngle = 45;
-    private double threeDownAngleV = 10;
-    private double threeRotate = 77;
-    private double threeRotateV = 0;
-    private double threeBranches = 10;
-    private double threeLength = 0;
-    private double threeLengthV = 0;
-    private double threeTaper = 1;
-    private double threeSegSplits = 0;
-    private double threeSplitAngle = 0;
-    private double threeSplitAngleV = 0;
-    private double threeCurveRes = 1;
-    private double threeCurve = 0;
-    private double threeCurveBack = 0;
-    private double threeCurveV = 0;
+        // Generating stem-object
+        /* var stemObject = GetComponent<ConeGenerator>()
+             .getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);*/
+        var stemObject =
+            ConeGenerator.getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);
+        stemObject.name = "Stem";
+        objectCount++;
 
-    // Blätter
-    private double leaves = 25;
-    private double leafShape = 0;
-    private double leafScale = 0.17;
-    private double leafScaleX = 1;
-    
-    private double attractionUp = 0.5;
-    
-    // Pruning
-    private double pruneRatio = 0;
-    private double pruneWidth = 0.5;
-    private double pruneWidthPeak = 0.5;
-    private double prunePowerLow = 0.5;
-    private double prunePowerHigh = 0.5;
-    
-    
-    
+        var angle = UnityEngine.Random.Range(0, 360); // Rotation around the stem where next branch is spawned
+        for (var i = 0; i < stems; i++) {
+            // vertical offset of the child
+            var start = length_base + distanceBetweenChildren * i;
+            Vector3 position = startPosition;
+            position.y = start;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.transform.position = new Vector3(0, 0.5f, 0);
+            // Calculating child values
+            var length_child = HelperFunctions.getLength_child_base(treePreset.shape, length_trunk, length_child_max, start, length_base);
+            var radius_child = HelperFunctions.getRadius_child(radius_trunk, topRadius, length_child, length_trunk,
+                start, treePreset.ratioPower);
+            var numberOfChildren =
+                HelperFunctions.getStems_base(treePreset.nBranches[2], length_child, length_trunk, length_child_max);
+
+            // Next iteration of the algorithm, starting with the child-object
+            List<GameObject> childs = weberIteration(
+                i,
+                stemObject,
+                1,
+                numberOfChildren,
+                position,
+                radius_child,
+                length_child,
+                radius_trunk,
+                length_base,
+                length_trunk,
+                angle,
+                start);
+
+            list.AddRange(childs);
+
+            angle = (int)(angle + (treePreset.nRotate[1] + Random.Range(-30, 30))) % 360; // Next angle around the stem
+        }
+
+        objectCount = list.Count;
+
+        UIController.addNumber(UIDisplay.uiTextsEnum.NumberOfObjects, objectCount);
+        UIController.addNumber(UIDisplay.uiTextsEnum.NumberOfTrees, 1);
+
+        return list;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    /// <summary>
+    /// Iteration of the Weber-Penn-algorithm
+    /// </summary>
+    /// <param name="id">child-id</param>
+    /// <param name="parent">parent-object</param>
+    /// <param name="depth">current depth in algorithm</param>
+    /// <param name="numberOfChildren">number of children this object will generate</param>
+    /// <param name="startPosition">initial position of this object</param>
+    /// <param name="currentRadius">radius of this branch</param>
+    /// <param name="currentLength">length of this branch</param>
+    /// <param name="prevRadius">radius of the parent-branch</param>
+    /// <param name="length_base">length of branchless area at the stem</param>
+    /// <param name="length_parent">length of the parent-branch</param>
+    /// <param name="rotateAngle">angle around the parent-stem</param>
+    /// <param name="offset">offset from the start of the stem</param>
+    private static List<GameObject> weberIteration(
+        int id,
+        GameObject parent,
+        int depth,
+        int numberOfChildren,
+        Vector3 startPosition,
+        float currentRadius,
+        float currentLength,
+        float prevRadius,
+        float length_base,
+        float length_parent,
+        float rotateAngle,
+        float offset) {
+        int objectCount = 0;
+        List<GameObject> list = new List<GameObject>();
+
+        var topRadius = HelperFunctions.getTopRadius(currentRadius, treePreset.nTaper[depth]);
+        Vector3 downangle_current;
+
+        if (treePreset.nDownAngleV[depth] >= 0) {
+            var angle = HelperFunctions.getDownAnglePositive(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth]);
+            downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
+        } else {
+            var angle = HelperFunctions.getDownAngleNegative(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth], length_parent, offset,
+                length_base);
+
+            downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
+        }
+
+        var branchObject = ConeGenerator.getCone(currentRadius, topRadius, currentLength, startPosition,
+            Quaternion.Euler(downangle_current));
+        branchObject.SetActive(false);
+        objectCount++;
+        list.Add(branchObject);
+
+        branchObject.transform.parent = parent.transform;
+        branchObject.name = "Branch " + id;
+
+
+        //   if (depth < levels-1) {
+        if (depth < 2) {
+            var startOffset = currentLength / 10;
+            var endOffset = currentLength / 5;
+            var distanceBetweenChildren = (currentLength - (startOffset + endOffset)) / numberOfChildren;
+            var angle = UnityEngine.Random.Range(0, 360);
+            //    int i = 0;
+            for (var i = 0; i < numberOfChildren; i++) {
+                var start = startOffset + distanceBetweenChildren * i;
+                var length_child_max = treePreset.nLength[depth + 1] + treePreset.nLengthV[depth + 1];
+                var offset_child = currentLength * treePreset.baseSize;
+                var length_child = HelperFunctions.getLength_child_iteration(length_child_max, currentLength, offset_child + start);
+                var radius_child = HelperFunctions.getRadius_child(currentRadius, topRadius, length_child,
+                    currentLength, start, treePreset.ratioPower);
+
+                var stems = HelperFunctions.getStems_iteration(treePreset.nBranches[depth], offset_child, length_parent);
+                var newPosition = startPosition + Vector3.Normalize(branchObject.transform.up) * start;
+
+                List<GameObject> childs = weberIteration(
+                    i,
+                    branchObject,
+                    depth + 1,
+                    stems,
+                    newPosition,
+                    radius_child,
+                    length_child,
+                    currentRadius,
+                    length_base,
+                    currentLength,
+                    angle,
+                    offset + start);
+
+                list.AddRange(childs);
+
+                angle = (int)(90 + (angle + (treePreset.nRotate[depth] + Random.Range(-20, 20))) % 360);
+            }
+        }
+
+        return list;
     }
 }
