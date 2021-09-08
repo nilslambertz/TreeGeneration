@@ -67,6 +67,8 @@ namespace DefaultNamespace
                 Destroy(child.gameObject);
             }
 
+            float[] values = PresetParameters.getCurrentPresetParameterValues();
+
             GameObject currentParameter;
             for (int i = 0; i < presetParameterList.Length; i++)
             {
@@ -82,7 +84,7 @@ namespace DefaultNamespace
                 Slider slider = currentParameter.transform.Find("Slider").GetComponent<Slider>();
                 slider.minValue = p.minValue;
                 slider.maxValue = p.maxValue;
-                slider.value = p.initialValue;
+                slider.value = values[i];
                 int x = i;
                 slider.onValueChanged.AddListener(delegate (float newValue)
                 {
