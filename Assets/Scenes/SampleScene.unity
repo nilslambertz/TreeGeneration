@@ -759,7 +759,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &551392869
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1258,7 +1258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &893829588
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2001,6 +2001,8 @@ MonoBehaviour:
   parameterListPanel: {fileID: 1223539647}
   parameterTemplate: {fileID: 7726106073009130125, guid: d5ff4caa87698ea419a1ca1aa3ce10bd,
     type: 3}
+  addButtonTemplate: {fileID: 8301753812593392650, guid: 434b1125cf8c61345bc26275c6cbb53f,
+    type: 3}
 --- !u!114 &1278538786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2067,7 +2069,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 101.17, y: -29.678}
+  m_AnchoredPosition: {x: 101.17, y: -29.677979}
   m_SizeDelta: {x: -202.33, y: -59.357}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1466712663
@@ -2849,7 +2851,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1711699747
 RectTransform:
   m_ObjectHideFlags: 0
