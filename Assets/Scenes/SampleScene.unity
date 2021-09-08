@@ -2001,6 +2001,8 @@ MonoBehaviour:
   parameterListPanel: {fileID: 1223539647}
   parameterTemplate: {fileID: 7726106073009130125, guid: d5ff4caa87698ea419a1ca1aa3ce10bd,
     type: 3}
+  addButtonTemplate: {fileID: 8301753812593392650, guid: 434b1125cf8c61345bc26275c6cbb53f,
+    type: 3}
 --- !u!114 &1278538786
 MonoBehaviour:
   m_ObjectHideFlags: 0
