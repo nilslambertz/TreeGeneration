@@ -18,7 +18,8 @@ namespace DefaultNamespace
         {
             showDebug,
             curvedBranches,
-            animationRendering
+            animationRendering,
+            randomColors
         }
 
         public struct OptionElementInfo
@@ -40,10 +41,11 @@ namespace DefaultNamespace
 
         private static void generateOptionList()
         {
-            optionList = new OptionElementInfo[3];
+            optionList = new OptionElementInfo[4];
             optionList[(int)OptionElement.showDebug] = new OptionElementInfo("Debug output", "Show debug information in the top left corner", true);
             optionList[(int)OptionElement.curvedBranches] = new OptionElementInfo("Curved branches", "Render curved branches (decreases performance dramatically!)", false);
             optionList[(int)OptionElement.animationRendering] = new OptionElementInfo("Animate generation", "Animate the generation of trees", true);
+            optionList[(int)OptionElement.randomColors] = new OptionElementInfo("Random colors", "Spawn trees with random colors for each branch", false);
         }
 
         public static OptionElementInfo getOption(OptionElement o)
