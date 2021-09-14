@@ -3,8 +3,10 @@ using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using System;
 
-public class GeneratorScript : MonoBehaviour {
+public class GeneratorScript : MonoBehaviour
+{
     // Preset
     private static TreePreset treePreset;
 
@@ -12,7 +14,8 @@ public class GeneratorScript : MonoBehaviour {
     /// Starts Weber-Penn-algorithm
     /// </summary>
     /// <param name="startPosition">initial position of the tree</param>
-    public static List<GameObject> startWeber(Vector3 startPosition) {
+    public static List<GameObject> startWeber(Vector3 startPosition)
+    {
         treePreset = SharedValues.getCurrentPreset();
 
         int objectCount = 0;
@@ -39,7 +42,8 @@ public class GeneratorScript : MonoBehaviour {
         objectCount++;
 
         var angle = UnityEngine.Random.Range(0, 360); // Rotation around the stem where next branch is spawned
-        for (var i = 0; i < stems; i++) {
+        for (var i = 0; i < stems; i++)
+        {
             // vertical offset of the child
             var start = length_base + distanceBetweenChildren * i;
             Vector3 position = startPosition;
@@ -52,8 +56,31 @@ public class GeneratorScript : MonoBehaviour {
             var numberOfChildren =
                 HelperFunctions.getStems_base(treePreset.nBranches[2], length_child, length_trunk, length_child_max);
 
+            bool curvedBranches = OptionListScript.getOption(OptionListScript.OptionElement.curvedBranches).value;
+
+            List<GameObject> childs = new List<GameObject>();
             // Next iteration of the algorithm, starting with the child-object
-            List<GameObject> childs = weberIteration(
+            if (curvedBranches)
+            {
+                Vector3 downangle_stem = startPosition;
+                childs = weberIterationCurved(
+               i,
+               stemObject,
+               1,
+               numberOfChildren,
+               position,
+               radius_child,
+               length_child,
+               radius_trunk,
+               length_base,
+               length_trunk,
+               angle,
+               downangle_stem,
+               start);
+            }
+            else
+            {
+                childs = weberIteration(
                 i,
                 stemObject,
                 1,
@@ -66,6 +93,7 @@ public class GeneratorScript : MonoBehaviour {
                 length_trunk,
                 angle,
                 start);
+            }
 
             list.AddRange(childs);
 
@@ -107,17 +135,21 @@ public class GeneratorScript : MonoBehaviour {
         float length_base,
         float length_parent,
         float rotateAngle,
-        float offset) {
+        float offset)
+    {
         int objectCount = 0;
         List<GameObject> list = new List<GameObject>();
 
         var topRadius = HelperFunctions.getTopRadius(currentRadius, treePreset.nTaper[depth]);
         Vector3 downangle_current;
 
-        if (treePreset.nDownAngleV[depth] >= 0) {
+        if (treePreset.nDownAngleV[depth] >= 0)
+        {
             var angle = HelperFunctions.getDownAnglePositive(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth]);
             downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
-        } else {
+        }
+        else
+        {
             var angle = HelperFunctions.getDownAngleNegative(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth], length_parent, offset,
                 length_base);
 
@@ -135,13 +167,15 @@ public class GeneratorScript : MonoBehaviour {
 
 
         //   if (depth < levels-1) {
-        if (depth < 2) {
+        if (depth < 2)
+        {
             var startOffset = currentLength / 10;
             var endOffset = currentLength / 5;
             var distanceBetweenChildren = (currentLength - (startOffset + endOffset)) / numberOfChildren;
             var angle = UnityEngine.Random.Range(0, 360);
             //    int i = 0;
-            for (var i = 0; i < numberOfChildren; i++) {
+            for (var i = 0; i < numberOfChildren; i++)
+            {
                 var start = startOffset + distanceBetweenChildren * i;
                 var length_child_max = treePreset.nLength[depth + 1] + treePreset.nLengthV[depth + 1];
                 var offset_child = currentLength * treePreset.baseSize;
@@ -164,6 +198,153 @@ public class GeneratorScript : MonoBehaviour {
                     length_base,
                     currentLength,
                     angle,
+                    offset + start);
+
+                list.AddRange(childs);
+
+                angle = (int)(90 + (angle + (treePreset.nRotate[depth] + Random.Range(-20, 20))) % 360);
+            }
+        }
+
+        return list;
+    }
+
+    private static List<GameObject> weberIterationCurved(
+        int id,
+        GameObject parent,
+        int depth,
+        int numberOfChildren,
+        Vector3 startPosition,
+        float currentRadius,
+        float currentLength,
+        float prevRadius,
+        float length_base,
+        float length_parent,
+        float rotateAngle,
+        Vector3 downangle_parent,
+        float offset)
+    {
+        int objectCount = 0;
+        List<GameObject> list = new List<GameObject>();
+        List<GameObject> segments = new List<GameObject>();
+
+        var topRadius = HelperFunctions.getTopRadius(currentRadius, treePreset.nTaper[depth]);
+
+        int curve_res = (int)treePreset.nCurveRes[depth];
+        float segment_length = currentLength / treePreset.nCurveRes[depth];
+        float[] segment_radius = new float[(curve_res + 1)];
+        for (int i = 0; i <= curve_res; i++)
+        {
+            segment_radius[i] = currentRadius - i * ((currentRadius - topRadius) / curve_res);
+        }
+        Vector3[] segment_angle = new Vector3[curve_res];
+
+        Vector3 downangle_current;
+
+        if (treePreset.nDownAngleV[depth] >= 0)
+        {
+            var angle = HelperFunctions.getDownAnglePositive(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth]);
+            downangle_current = new Vector3(0, rotateAngle, angle) + downangle_parent; // TODO: angle should be passed as Vector3 to avoid erros in rotation
+        }
+        else
+        {
+            var angle = HelperFunctions.getDownAngleNegative(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth], length_parent, offset,
+                length_base);
+
+            downangle_current = new Vector3(0, rotateAngle, angle) + downangle_parent; // TODO: angle should be passed as Vector3 to avoid erros in rotation
+        }
+        segment_angle[0] = downangle_current;
+
+        var branchObject = ConeGenerator.getCone(currentRadius, segment_radius[1], segment_length, startPosition,
+            Quaternion.Euler(downangle_current));
+        branchObject.SetActive(false);
+        objectCount++;
+        list.Add(branchObject);
+        segments.Add(branchObject);
+
+        branchObject.transform.parent = parent.transform;
+        branchObject.name = "Branch " + id;
+        id++;
+
+        float segment_curve;
+        for (int i = 1; i < curve_res; i++)
+        {
+            GameObject segmentObject = new GameObject();
+            Vector3 prevSegEnd = new Vector3();
+            prevSegEnd = segments[i - 1].transform.position + Vector3.Normalize(segments[i - 1].transform.up) * segment_length;
+
+            if (treePreset.nCurveBack[depth] == 0)
+            {
+                segment_curve = treePreset.nCurve[depth] / treePreset.nCurveRes[depth];
+            }
+            else
+            {
+                if ((i * segment_length) < (currentLength / 2))
+                {
+                    segment_curve = treePreset.nCurve[depth] / (treePreset.nCurveRes[depth] / 2);
+                }
+                else
+                {
+                    segment_curve = treePreset.nCurveBack[depth] / (treePreset.nCurveRes[depth] / 2);
+                }
+            }
+
+            downangle_current = new Vector3(0, 0, -segment_curve) + segment_angle[i - 1]; // TODO: angle should be passed as Vector3 to avoid erros in rotation
+
+            segment_angle[i] = downangle_current;
+
+            segmentObject = ConeGenerator.getCone(segment_radius[i], segment_radius[i + 1], segment_length, prevSegEnd,
+                Quaternion.Euler(downangle_current));
+
+            segmentObject.SetActive(false);
+            objectCount++;
+            list.Add(segmentObject);
+            segments.Add(segmentObject);
+
+            segmentObject.transform.parent = parent.transform;
+            segmentObject.name = "Branch " + id;
+            id++;
+        }
+
+
+        //   if (depth < levels-1) {
+        if (depth < 2)
+        {
+            var startOffset = currentLength / 10;
+            var endOffset = currentLength / 5;
+            var distanceBetweenChildren = (currentLength - (startOffset + endOffset)) / numberOfChildren;
+            var angle = UnityEngine.Random.Range(0, 360);
+            //    int i = 0;
+            for (var i = 0; i < numberOfChildren; i++)
+            {
+                var start = startOffset + distanceBetweenChildren * i;
+                var length_child_max = treePreset.nLength[depth + 1] + treePreset.nLengthV[depth + 1];
+                var offset_child = currentLength * treePreset.baseSize;
+                var length_child = HelperFunctions.getLength_child_iteration(length_child_max, currentLength, offset_child + start);
+                var radius_child = HelperFunctions.getRadius_child(currentRadius, topRadius, length_child,
+                    currentLength, start, treePreset.ratioPower);
+
+                var stems = HelperFunctions.getStems_iteration(treePreset.nBranches[depth], offset_child, length_parent);
+
+                // finding the new position on the segments
+                int tmp_seg_index = (int)Math.Floor((start / segment_length));
+                var tmp_distance = start % segment_length;
+
+                var newPosition = segments[tmp_seg_index].transform.position + Vector3.Normalize(segments[tmp_seg_index].transform.up) * tmp_distance;
+
+                List<GameObject> childs = weberIterationCurved(
+                    i,
+                    segments[tmp_seg_index],
+                    depth + 1,
+                    stems,
+                    newPosition,
+                    radius_child,
+                    length_child,
+                    currentRadius,
+                    length_base,
+                    currentLength,
+                    angle,
+                    segment_angle[tmp_seg_index],
                     offset + start);
 
                 list.AddRange(childs);
