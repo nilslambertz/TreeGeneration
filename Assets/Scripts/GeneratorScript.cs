@@ -10,6 +10,8 @@ public class GeneratorScript : MonoBehaviour
     // Preset
     private static TreePreset treePreset;
 
+    private static bool randomColors;
+
     /// <summary>
     /// Starts Weber-Penn-algorithm
     /// </summary>
@@ -33,11 +35,13 @@ public class GeneratorScript : MonoBehaviour
         var stems = treePreset.nBranches[1];
         var distanceBetweenChildren = (length_trunk - length_base) / stems;
 
+        randomColors = OptionListScript.getOption(OptionListScript.OptionElement.randomColors).value;
+
         // Generating stem-object
         /* var stemObject = GetComponent<ConeGenerator>()
              .getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);*/
         var stemObject =
-            ConeGenerator.getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity);
+            ConeGenerator.getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity, GetColor(randomColors));
         stemObject.name = "Stem";
         objectCount++;
 
@@ -157,7 +161,7 @@ public class GeneratorScript : MonoBehaviour
         }
 
         var branchObject = ConeGenerator.getCone(currentRadius, topRadius, currentLength, startPosition,
-            Quaternion.Euler(downangle_current));
+            Quaternion.Euler(downangle_current), GetColor(randomColors));
         branchObject.SetActive(false);
         objectCount++;
         list.Add(branchObject);
@@ -256,7 +260,7 @@ public class GeneratorScript : MonoBehaviour
         segment_angle[0] = downangle_current;
 
         var branchObject = ConeGenerator.getCone(currentRadius, segment_radius[1], segment_length, startPosition,
-            Quaternion.Euler(downangle_current));
+            Quaternion.Euler(downangle_current), GetColor(randomColors));
         branchObject.SetActive(false);
         objectCount++;
         list.Add(branchObject);
@@ -294,7 +298,7 @@ public class GeneratorScript : MonoBehaviour
             segment_angle[i] = downangle_current;
 
             segmentObject = ConeGenerator.getCone(segment_radius[i], segment_radius[i + 1], segment_length, prevSegEnd,
-                Quaternion.Euler(downangle_current));
+                Quaternion.Euler(downangle_current), GetColor(randomColors));
 
             segmentObject.SetActive(false);
             objectCount++;
@@ -354,5 +358,17 @@ public class GeneratorScript : MonoBehaviour
         }
 
         return list;
+    }
+
+    private static Color GetColor(bool random)
+    {
+        if (random)
+        {
+            return new Color(Random.Range(0.1f, 0.9f), Random.Range(0.1f, 0.9f), Random.Range(0.01f, 0.9f), 1f);
+        }
+        else
+        {
+            return new Color(Random.Range(0.19f, 0.21f), Random.Range(0.11f, 0.13f), Random.Range(0.01f, 0.02f), 1f);
+        }
     }
 }

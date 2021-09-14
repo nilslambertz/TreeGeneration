@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 
-public class ConeGenerator : MonoBehaviour {
+public class ConeGenerator : MonoBehaviour
+{
     private static float doublePi = Mathf.PI * 2f;
     private static readonly int numberOfSides = 50;
     private static int[] triangles;
     private static Vector3[] vertices;
 
     public static GameObject getCone(float bottomRadius, float topRadius, float height, Vector3 position,
-        Quaternion rotation) {
+        Quaternion rotation, Color color)
+    {
         var gameObject = new GameObject();
 
         var meshRenderer = gameObject.AddComponent<MeshRenderer>();
@@ -27,21 +29,24 @@ public class ConeGenerator : MonoBehaviour {
 
         // Bottom cap
         vertices[vert++] = new Vector3(0f, 0f, 0f);
-        while (++vert <= numberOfSides) {
+        while (++vert <= numberOfSides)
+        {
             var rad = (float)vert / numberOfSides * doublePi;
             vertices[vert] = new Vector3(Mathf.Cos(rad) * bottomRadius, 0f, Mathf.Sin(rad) * bottomRadius);
         }
 
         // Top cap
         vertices[vert] = new Vector3(0f, height, 0f);
-        while (++vert <= numberOfSides * 2 + 1) {
+        while (++vert <= numberOfSides * 2 + 1)
+        {
             var rad = (float)(vert - numberOfSides - 1) / numberOfSides * doublePi;
             vertices[vert] = new Vector3(Mathf.Cos(rad) * topRadius, height, Mathf.Sin(rad) * topRadius);
         }
 
         // Sides
         var v = 0;
-        while (vert <= vertices.Length - 4) {
+        while (vert <= vertices.Length - 4)
+        {
             var rad = (float)v / numberOfSides * doublePi;
             vertices[vert] = new Vector3(Mathf.Cos(rad) * topRadius, height, Mathf.Sin(rad) * topRadius);
             vertices[vert + 1] = new Vector3(Mathf.Cos(rad) * bottomRadius, 0, Mathf.Sin(rad) * bottomRadius);
@@ -66,7 +71,8 @@ public class ConeGenerator : MonoBehaviour {
 
         // Sides
         v = 0;
-        while (vert <= vertices.Length - 4) {
+        while (vert <= vertices.Length - 4)
+        {
             var rad = (float)v / numberOfSides * doublePi;
             var cos = Mathf.Cos(rad);
             var sin = Mathf.Sin(rad);
@@ -86,7 +92,8 @@ public class ConeGenerator : MonoBehaviour {
         // Bottom cap
         var u = 0;
         uvs[u++] = new Vector2(0.5f, 0.5f);
-        while (u <= numberOfSides) {
+        while (u <= numberOfSides)
+        {
             var rad = (float)u / numberOfSides * doublePi;
             uvs[u] = new Vector2(Mathf.Cos(rad) * .5f + .5f, Mathf.Sin(rad) * .5f + .5f);
             u++;
@@ -94,7 +101,8 @@ public class ConeGenerator : MonoBehaviour {
 
         // Top cap
         uvs[u++] = new Vector2(0.5f, 0.5f);
-        while (u <= numberOfSides * 2 + 1) {
+        while (u <= numberOfSides * 2 + 1)
+        {
             var rad = (float)u / numberOfSides * doublePi;
             uvs[u] = new Vector2(Mathf.Cos(rad) * .5f + .5f, Mathf.Sin(rad) * .5f + .5f);
             u++;
@@ -102,7 +110,8 @@ public class ConeGenerator : MonoBehaviour {
 
         // Sides
         var u_sides = 0;
-        while (u <= uvs.Length - 4) {
+        while (u <= uvs.Length - 4)
+        {
             var t = (float)u_sides / numberOfSides;
             uvs[u] = new Vector3(t, 1f);
             uvs[u + 1] = new Vector3(t, 0f);
@@ -121,7 +130,8 @@ public class ConeGenerator : MonoBehaviour {
         // Bottom cap
         var tri = 0;
         var i = 0;
-        while (tri < numberOfSides - 1) {
+        while (tri < numberOfSides - 1)
+        {
             triangles[i] = 0;
             triangles[i + 1] = tri + 1;
             triangles[i + 2] = tri + 2;
@@ -137,7 +147,8 @@ public class ConeGenerator : MonoBehaviour {
 
         // Top cap
         //tri++;
-        while (tri < numberOfSides * 2) {
+        while (tri < numberOfSides * 2)
+        {
             triangles[i] = tri + 2;
             triangles[i + 1] = tri + 1;
             triangles[i + 2] = nbVerticesCap;
@@ -153,7 +164,8 @@ public class ConeGenerator : MonoBehaviour {
         tri++;
 
         // Sides
-        while (tri <= nbTriangles) {
+        while (tri <= nbTriangles)
+        {
             triangles[i] = tri + 2;
             triangles[i + 1] = tri + 1;
             triangles[i + 2] = tri + 0;
@@ -179,6 +191,9 @@ public class ConeGenerator : MonoBehaviour {
 
         gameObject.transform.position = position;
         gameObject.transform.rotation = rotation;
+
+        var objectRenderer = gameObject.GetComponent<Renderer>();
+        objectRenderer.material.SetColor("_Color", color);
 
         return gameObject;
     }
