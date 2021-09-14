@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using DefaultNamespace;
 
-public class PauseMenu : MonoBehaviour {
+public class PauseMenu : MonoBehaviour
+{
 
     public static bool gamePaused;
 
@@ -14,33 +15,50 @@ public class PauseMenu : MonoBehaviour {
 
     public GameObject presetContainer;
 
+    public GameObject optionsContainer;
+
     public GameObject debugOverlay;
 
     private List<TreePreset> presetList;
 
-    void Start() {
+    void Start()
+    {
         PresetParameters.initialisePresets();
         updatePresetList();
+
+        pauseMenuOverlay.SetActive(false);
+        buttonContainer.SetActive(true);
+        presetContainer.SetActive(false);
+        optionsContainer.SetActive(false);
+
     }
 
-    void Update() {
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            if (gamePaused) {
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (gamePaused)
+            {
                 resume();
-            } else {
+            }
+            else
+            {
                 pause();
             }
         }
     }
 
-    private void updatePresetList() {
+    private void updatePresetList()
+    {
         presetList = PresetParameters.getPresetList();
     }
 
-    public void resume() {
+    public void resume()
+    {
         pauseMenuOverlay.SetActive(false);
-        buttonContainer.SetActive(true);
+        optionsContainer.SetActive(false);
         presetContainer.SetActive(false);
+        buttonContainer.SetActive(true);
         debugOverlay.SetActive(true);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -48,23 +66,44 @@ public class PauseMenu : MonoBehaviour {
         gamePaused = false;
     }
 
-    void pause() {
+    void pause()
+    {
         debugOverlay.SetActive(false);
-        buttonContainer.SetActive(true);
         presetContainer.SetActive(false);
+        optionsContainer.SetActive(false);
         pauseMenuOverlay.SetActive(true);
+        buttonContainer.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 0;
         gamePaused = true;
     }
 
-    public void togglePresetMenu() {
-        buttonContainer.SetActive(!buttonContainer.activeSelf);
-        presetContainer.SetActive(!presetContainer.activeSelf);
+    public void openPresetMenu()
+    {
+        buttonContainer.SetActive(false);
+        optionsContainer.SetActive(false);
+        presetContainer.SetActive(true);
+
     }
 
-    public void quitGame() {
+    public void openOptionsMenu()
+    {
+        buttonContainer.SetActive(false);
+        presetContainer.SetActive(false);
+        optionsContainer.SetActive(true);
+
+    }
+
+    public void backToMenu()
+    {
+        presetContainer.SetActive(false);
+        optionsContainer.SetActive(false);
+        buttonContainer.SetActive(true);
+
+    }
+    public void quitGame()
+    {
         Debug.Log("Quitting game.");
         Application.Quit();
     }

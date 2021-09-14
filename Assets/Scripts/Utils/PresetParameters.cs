@@ -45,12 +45,25 @@ namespace DefaultNamespace
         {
             if (presetParameterList == null)
             {
-                initialisePresetParameters();
+                setDefaultPresetParameterInfos();
             }
             return presetParameterList;
         }
 
-        private static void initialisePresetParameters()
+        public static float[] getCurrentPresetParameterValues()
+        {
+            float[] values = new float[6];
+            TreePreset p = SharedValues.getCurrentPreset();
+            values[(int)PresetParameterIndex.baseSize] = p.baseSize;
+            values[(int)PresetParameterIndex.oneBranches] = p.nBranches[1];
+            values[(int)PresetParameterIndex.twoBranches] = p.nBranches[2];
+            values[(int)PresetParameterIndex.zeroLength] = p.nLength[0];
+            values[(int)PresetParameterIndex.oneLength] = p.nLength[1];
+            values[(int)PresetParameterIndex.twoLength] = p.nLength[2];
+            return values;
+        }
+
+        private static void setDefaultPresetParameterInfos()
         {
             presetParameterList = new PresetParameterInfo[6];
             presetParameterList[((int)PresetParameterIndex.baseSize)] = new PresetParameterInfo("Base Size", "Branchless area at the start of the stem", 0.01f, 0.5f, 0.2f, System.TypeCode.Double);
@@ -63,7 +76,7 @@ namespace DefaultNamespace
 
         public static void initialisePresets()
         {
-            initialisePresetParameters();
+            setDefaultPresetParameterInfos();
             presetList = new List<TreePreset>();
 
             TreePreset quakingAspen = new TreePreset("Quaking Aspen",
