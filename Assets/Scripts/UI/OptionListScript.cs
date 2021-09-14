@@ -17,7 +17,7 @@ namespace DefaultNamespace
         public enum OptionElement
         {
             showDebug,
-            roundedBranches,
+            curvedBranches,
             animationRendering
         }
 
@@ -42,7 +42,7 @@ namespace DefaultNamespace
         {
             optionList = new OptionElementInfo[3];
             optionList[(int)OptionElement.showDebug] = new OptionElementInfo("Debug output", "Show debug information in the top left corner", true);
-            optionList[(int)OptionElement.roundedBranches] = new OptionElementInfo("Rounded branches", "Render curved branches (decreases performance dramatically!)", false);
+            optionList[(int)OptionElement.curvedBranches] = new OptionElementInfo("Curved branches", "Render curved branches (decreases performance dramatically!)", false);
             optionList[(int)OptionElement.animationRendering] = new OptionElementInfo("Animate generation", "Animate the generation of trees", true);
         }
 
