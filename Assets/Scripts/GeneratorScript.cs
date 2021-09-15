@@ -263,7 +263,7 @@ public class GeneratorScript : MonoBehaviour
         if (treePreset.nDownAngleV[depth] >= 0)
         {
             var angle = HelperFunctions.getDownAnglePositive(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth]);
-            downangle_current = new Vector3(0, rotateAngle, angle) + downangle_parent;
+            downangle_current = new Vector3(0, rotateAngle, (0.5f * angle)) + downangle_parent;
         }
         else
         {
