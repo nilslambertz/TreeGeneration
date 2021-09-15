@@ -38,7 +38,7 @@ public class GeneratorScript : MonoBehaviour
         // Calculating values for stem
         var scale_tree = HelperFunctions.getScale_tree(treePreset.scale, treePreset.scaleV);
         var length_base = HelperFunctions.getLength_base(treePreset.baseSize, scale_tree); // Bare area without branches
-        var length_trunk = HelperFunctions.getLength_trunk(treePreset.nLength[0], treePreset.nLengthV[0], scale_tree);
+        var length_trunk = GetRandomizedValue(HelperFunctions.getLength_trunk(treePreset.nLength[0], treePreset.nLengthV[0], scale_tree), 0.25f);
         var radius_trunk = HelperFunctions.getRadius_trunk(length_trunk, treePreset.ratio, treePreset.zeroScale);
         var topRadius = HelperFunctions.getTopRadius(radius_trunk, treePreset.nTaper[0]);
         var length_child_max = HelperFunctions.getLength_child_max(treePreset.nLength[1], treePreset.nLengthV[1]);
@@ -69,7 +69,7 @@ public class GeneratorScript : MonoBehaviour
             position.y = start;
 
             // Calculating child values
-            var length_child = HelperFunctions.getLength_child_base(treePreset.shape, length_trunk, length_child_max, start, length_base);
+            var length_child = GetRandomizedValue(HelperFunctions.getLength_child_base(treePreset.shape, length_trunk, length_child_max, start, length_base), 0.1f);
             var radius_child = HelperFunctions.getRadius_child(radius_trunk, topRadius, length_child, length_trunk,
                 start, treePreset.ratioPower);
             var numberOfChildren =
@@ -165,14 +165,14 @@ public class GeneratorScript : MonoBehaviour
         if (treePreset.nDownAngleV[depth] >= 0)
         {
             var angle = HelperFunctions.getDownAnglePositive(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth]);
-            downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
+            downangle_current = new Vector3(0, rotateAngle, angle);
         }
         else
         {
             var angle = HelperFunctions.getDownAngleNegative(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth], length_parent, offset,
                 length_base);
 
-            downangle_current = new Vector3(0, rotateAngle, angle); // TODO: angle should be passed as Vector3 to avoid erros in rotation
+            downangle_current = new Vector3(0, rotateAngle, angle);
         }
 
         var branchObject = ConeGenerator.getCone(currentRadius, topRadius, currentLength, startPosition,
@@ -198,7 +198,7 @@ public class GeneratorScript : MonoBehaviour
                 var start = startOffset + distanceBetweenChildren * i;
                 var length_child_max = treePreset.nLength[depth + 1] + treePreset.nLengthV[depth + 1];
                 var offset_child = currentLength * treePreset.baseSize;
-                var length_child = HelperFunctions.getLength_child_iteration(length_child_max, currentLength, offset_child + start);
+                var length_child = GetRandomizedValue(HelperFunctions.getLength_child_iteration(length_child_max, currentLength, offset_child + start), 0.1f);
                 var radius_child = HelperFunctions.getRadius_child(currentRadius, topRadius, length_child,
                     currentLength, start, treePreset.ratioPower);
 
@@ -263,14 +263,14 @@ public class GeneratorScript : MonoBehaviour
         if (treePreset.nDownAngleV[depth] >= 0)
         {
             var angle = HelperFunctions.getDownAnglePositive(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth]);
-            downangle_current = new Vector3(0, rotateAngle, angle) + downangle_parent; // TODO: angle should be passed as Vector3 to avoid erros in rotation
+            downangle_current = new Vector3(0, rotateAngle, angle) + downangle_parent;
         }
         else
         {
             var angle = HelperFunctions.getDownAngleNegative(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth], length_parent, offset,
                 length_base);
 
-            downangle_current = new Vector3(0, rotateAngle, angle) + downangle_parent; // TODO: angle should be passed as Vector3 to avoid erros in rotation
+            downangle_current = new Vector3(0, rotateAngle, angle) + downangle_parent;
         }
         segment_angle[0] = downangle_current;
 
@@ -308,7 +308,7 @@ public class GeneratorScript : MonoBehaviour
                 }
             }
 
-            downangle_current = new Vector3(0, 0, -segment_curve) + segment_angle[i - 1]; // TODO: angle should be passed as Vector3 to avoid erros in rotation
+            downangle_current = new Vector3(0, 0, segment_curve) + segment_angle[i - 1];
 
             segment_angle[i] = downangle_current;
 
@@ -338,7 +338,7 @@ public class GeneratorScript : MonoBehaviour
                 var start = startOffset + distanceBetweenChildren * i;
                 var length_child_max = treePreset.nLength[depth + 1] + treePreset.nLengthV[depth + 1];
                 var offset_child = currentLength * treePreset.baseSize;
-                var length_child = HelperFunctions.getLength_child_iteration(length_child_max, currentLength, offset_child + start);
+                var length_child = GetRandomizedValue(HelperFunctions.getLength_child_iteration(length_child_max, currentLength, offset_child + start), 0.1f);
                 var radius_child = HelperFunctions.getRadius_child(currentRadius, topRadius, length_child,
                     currentLength, start, treePreset.ratioPower);
 
@@ -384,5 +384,10 @@ public class GeneratorScript : MonoBehaviour
         {
             return new Color(Random.Range(0.19f, 0.21f), Random.Range(0.11f, 0.13f), Random.Range(0.01f, 0.02f), 1f);
         }
+    }
+
+    private static float GetRandomizedValue(float value, float percent)
+    {
+        return value + Random.Range(-value * percent, value * percent);
     }
 }
