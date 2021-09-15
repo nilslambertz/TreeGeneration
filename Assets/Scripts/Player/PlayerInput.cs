@@ -8,27 +8,29 @@ namespace DefaultNamespace
 {
     public class PlayerInput : MonoBehaviour
     {
-        public Transform position;
-        public LayerMask groundMask;
-        public LayerMask treeMask;
+        public Transform position; // Current position
+        public LayerMask groundMask; // Mask of the floor plane
+        public LayerMask treeMask; // Mask of the tree
 
-        private GameObject circle;
-        private bool circleHidden = true;
+        private GameObject circle; // Red circle, where new trees will be generated from
+        private bool circleHidden = true; // If circle is hidden
 
-        private List<GameObject> gameObjectList = new List<GameObject>();
+        private List<GameObject> gameObjectList = new List<GameObject>(); // List of branches which need to be rendered
 
-        private bool animateGeneration;
+        private bool animateGeneration; // If generation should be animated
 
-        private GameObject treeInFocus;
-        private Color treeInFocusColor;
+        private GameObject treeInFocus; // current tree where the mouse is pointing at
+        private Color treeInFocusColor; // color of the focussed tree
 
         private void Start()
         {
+            // Create circle
             circle = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             circle.transform.localScale = new Vector3(1, 0.1f, 1);
             circle.GetComponent<Renderer>().material.color = Color.red;
         }
 
+        // Sets color of a tree-stem
         private void setColor(GameObject tree, Color color)
         {
             var objectRenderer = tree.GetComponent<Renderer>();
@@ -42,8 +44,13 @@ namespace DefaultNamespace
             {
                 if (Input.GetKeyDown(KeyCode.C))
                 {
-                    List<GameObject> gameObjectList = GeneratorScript.getTreeList();
-                    foreach (GameObject g in gameObjectList)
+                    // Render all remaing branches to avoid error after deleting
+                    CancelInvoke("renderBranches");
+                    renderAllBranches();
+
+                    // Get tree-list and destroy all of them
+                    List<GameObject> treeList = GeneratorScript.getTreeList();
+                    foreach (GameObject g in treeList)
                     {
                         Destroy(g);
                         treeInFocus = null;
@@ -53,13 +60,21 @@ namespace DefaultNamespace
                     UIController.setNumber(UIDisplay.uiTextsEnum.NumberOfObjects, 0);
                     GeneratorScript.clearTreeList();
                 }
+                // Looking at a tree
                 else if (Physics.Raycast(position.position, position.forward, out var hitTree, Mathf.Infinity, treeMask))
                 {
+                    // Hide circle
                     circleHidden = true;
                     circle.SetActive(false);
+
                     GameObject newTreeInFocus = hitTree.collider.gameObject;
                     if (Input.GetKeyDown(KeyCode.Delete))
                     {
+                        // Render all remaing branches to avoid error after deleting
+                        CancelInvoke("renderBranches");
+                        renderAllBranches();
+
+                        // Count children and grandchildren, then delete the tree
                         int childCount = 0;
                         Destroy(newTreeInFocus);
                         for (int i = 0; i < newTreeInFocus.transform.childCount; i++)
@@ -75,14 +90,18 @@ namespace DefaultNamespace
                     }
                     else
                     {
+                        // Check if not already looking at a tree
                         if (treeInFocus == null)
                         {
+                            // Change the color to red
                             treeInFocus = newTreeInFocus;
                             treeInFocusColor = treeInFocus.GetComponent<Renderer>().material.GetColor("_Color");
                             setColor(treeInFocus, Color.red);
                         }
+                        // If looking at a different tree than befor
                         if (newTreeInFocus.GetInstanceID() != treeInFocus.GetInstanceID())
                         {
+                            // Change the color of the old tree back to the original color, change current color to red
                             setColor(treeInFocus, treeInFocusColor);
                             treeInFocus = newTreeInFocus;
                             treeInFocusColor = treeInFocus.GetComponent<Renderer>().material.GetColor("_Color");
@@ -92,35 +111,40 @@ namespace DefaultNamespace
                 }
                 else
                 {
+                    // Change the color of the old focussed tree back to the original color
                     if (treeInFocus != null)
                     {
                         setColor(treeInFocus, treeInFocusColor);
                         treeInFocus = null;
                         treeInFocusColor = Color.black;
                     }
+
+                    // If looking at the ground
                     if (Physics.Raycast(position.position, position.forward, out var hitGround, Mathf.Infinity, groundMask))
                     {
+                        // Set circle active, if not already done
                         if (circleHidden)
                         {
                             circle.SetActive(true);
                         }
 
+                        // Update position of the circle
                         circle.transform.position = hitGround.point;
 
+                        // Left mouse button clicked
                         if (Input.GetMouseButtonDown(0))
                         {
+                            // Render all remaining branches from the old generation
                             if (gameObjectList.Count != 0)
                             {
                                 CancelInvoke("renderBranches");
                                 renderAllBranches();
                             }
-                            bool newValue = OptionListScript.getOption(OptionListScript.OptionElement.animationRendering).value;
 
-                            if (newValue != animateGeneration)
-                            {
-                                animateGeneration = newValue;
-                            }
+                            // Update animationRendering-value 
+                            animateGeneration = OptionListScript.getOption(OptionListScript.OptionElement.animationRendering).value;
 
+                            // Generate tree and render animation, if option is true, otherwise the tree is rendered directly
                             gameObjectList = GeneratorScript.startWeber(hitGround.point);
                             if (animateGeneration)
                             {
@@ -135,6 +159,7 @@ namespace DefaultNamespace
                     }
                     else
                     {
+                        // If not looking at the ground, hide circle
                         circleHidden = true;
                         circle.SetActive(false);
                     };
@@ -142,6 +167,7 @@ namespace DefaultNamespace
             }
         }
 
+        // Renders all branches instantly
         private void renderAllBranches()
         {
             foreach (GameObject g in gameObjectList)
@@ -151,6 +177,7 @@ namespace DefaultNamespace
             gameObjectList.Clear();
         }
 
+        // Renderes next branch and removes it from the list
         private void renderBranches()
         {
             if (gameObjectList.Count == 0)
