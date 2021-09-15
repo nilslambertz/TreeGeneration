@@ -10,6 +10,18 @@ public class GeneratorScript : MonoBehaviour
     // Preset
     private static TreePreset treePreset;
 
+    private static List<GameObject> treeList = new List<GameObject>();
+
+    public static List<GameObject> getTreeList()
+    {
+        return treeList;
+    }
+
+    public static void clearTreeList()
+    {
+        treeList.Clear();
+    }
+
     private static bool randomColors;
 
     /// <summary>
@@ -43,6 +55,9 @@ public class GeneratorScript : MonoBehaviour
         var stemObject =
             ConeGenerator.getCone(radius_trunk, topRadius, length_trunk, startPosition, Quaternion.identity, GetColor(randomColors));
         stemObject.name = "Stem";
+        stemObject.AddComponent<MeshCollider>();
+        stemObject.layer = 8;
+        treeList.Add(stemObject);
         objectCount++;
 
         var angle = UnityEngine.Random.Range(0, 360); // Rotation around the stem where next branch is spawned
@@ -106,8 +121,8 @@ public class GeneratorScript : MonoBehaviour
 
         objectCount = list.Count;
 
-        UIController.addNumber(UIDisplay.uiTextsEnum.NumberOfObjects, objectCount);
-        UIController.addNumber(UIDisplay.uiTextsEnum.NumberOfTrees, 1);
+        UIController.addValue(UIDisplay.UIDebugTextEnum.NumberOfObjects, objectCount);
+        UIController.addValue(UIDisplay.UIDebugTextEnum.NumberOfTrees, 1);
 
         return list;
     }
@@ -267,13 +282,13 @@ public class GeneratorScript : MonoBehaviour
         segments.Add(branchObject);
 
         branchObject.transform.parent = parent.transform;
-        branchObject.name = "Branch " + id;
+        branchObject.name = "Branch " + id + " segment 0";
         id++;
 
         float segment_curve;
         for (int i = 1; i < curve_res; i++)
         {
-            GameObject segmentObject = new GameObject();
+            GameObject segmentObject;
             Vector3 prevSegEnd = new Vector3();
             prevSegEnd = segments[i - 1].transform.position + Vector3.Normalize(segments[i - 1].transform.up) * segment_length;
 
@@ -299,14 +314,13 @@ public class GeneratorScript : MonoBehaviour
 
             segmentObject = ConeGenerator.getCone(segment_radius[i], segment_radius[i + 1], segment_length, prevSegEnd,
                 Quaternion.Euler(downangle_current), GetColor(randomColors));
+            segmentObject.transform.parent = parent.transform;
+            segmentObject.name = "Branch " + id + " segment " + i;
 
             segmentObject.SetActive(false);
             objectCount++;
             list.Add(segmentObject);
             segments.Add(segmentObject);
-
-            segmentObject.transform.parent = parent.transform;
-            segmentObject.name = "Branch " + id;
             id++;
         }
 

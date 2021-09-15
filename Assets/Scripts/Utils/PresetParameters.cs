@@ -41,6 +41,7 @@ namespace DefaultNamespace
 
         private static int customPresetId = 0;
 
+        // Returns PresetParameterInfo-list
         public static PresetParameterInfo[] GetPresetParameterInfo()
         {
             if (presetParameterList == null)
@@ -50,6 +51,7 @@ namespace DefaultNamespace
             return presetParameterList;
         }
 
+        // returns parameters of current preset
         public static float[] getCurrentPresetParameterValues()
         {
             float[] values = new float[6];
@@ -63,6 +65,7 @@ namespace DefaultNamespace
             return values;
         }
 
+        // Sets default values for parameters (same as "Black Tupelo")
         private static void setDefaultPresetParameterInfos()
         {
             presetParameterList = new PresetParameterInfo[6];
@@ -74,6 +77,7 @@ namespace DefaultNamespace
             presetParameterList[((int)PresetParameterIndex.twoLength)] = new PresetParameterInfo("Length (3)", "Length of branches at depth 3", 0.1f, 1f, 1f, System.TypeCode.Double);
         }
 
+        // Initialises given presets
         public static void initialisePresets()
         {
             setDefaultPresetParameterInfos();
@@ -151,6 +155,7 @@ namespace DefaultNamespace
             return null;
         }
 
+        // Returns preset-list
         public static List<TreePreset> getPresetList()
         {
             if (presetList == null)
@@ -160,15 +165,7 @@ namespace DefaultNamespace
             return presetList;
         }
 
-        /*private struct CustomPresetMapValues {
-            public static float[] baseSizeValues = new[] { 0.01f, 0.5f, 0.01f, 0.5f };
-            public static float[] lengthValues = new[] { 0.1f, 1f, 0.1f, 1f };
-        }
-
-        private static float map(float x, float in_min, float in_max, float out_min, float out_max) {
-            return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-        }*/
-
+        // Creates new preset
         public static void createCustomTreePreset()
         {
             TreePreset custom = new TreePreset("Preset #" + (customPresetId++),
@@ -187,6 +184,7 @@ namespace DefaultNamespace
             presetList.Add(custom);
         }
 
+        // Changes value of a preset
         public static void changePresetValue(int id, int index, float newValue)
         {
 

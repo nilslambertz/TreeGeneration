@@ -13,18 +13,25 @@ namespace DefaultNamespace
             uiDisplay = ui;
         }
 
-        public static void setNumber(UIDisplay.uiTextsEnum e, int number)
+        public static void setValue(UIDisplay.UIDebugTextEnum e, object newValue)
         {
             if (uiDisplay != null)
             {
-                uiDisplay.setNumber(e, number);
+                uiDisplay.setValue(e, newValue);
             }
         }
-        public static void addNumber(UIDisplay.uiTextsEnum e, int number)
+        public static void addValue(UIDisplay.UIDebugTextEnum e, object add)
         {
             if (uiDisplay != null)
             {
-                uiDisplay.addNumber(e, number);
+                uiDisplay.addValue(e, add);
+            }
+        }
+        public static void subtractValue(UIDisplay.UIDebugTextEnum e, object subtract)
+        {
+            if (uiDisplay != null)
+            {
+                uiDisplay.subtractValue(e, subtract);
             }
         }
     }

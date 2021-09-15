@@ -27,9 +27,9 @@ public class PauseMenu : MonoBehaviour
         updatePresetList();
 
         pauseMenuOverlay.SetActive(false);
-        buttonContainer.SetActive(true);
         presetContainer.SetActive(false);
         optionsContainer.SetActive(false);
+        buttonContainer.SetActive(true);
 
     }
 
@@ -48,11 +48,13 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
+    // Updates list of presets
     private void updatePresetList()
     {
         presetList = PresetParameters.getPresetList();
     }
 
+    // Resumes game
     public void resume()
     {
         pauseMenuOverlay.SetActive(false);
@@ -66,6 +68,7 @@ public class PauseMenu : MonoBehaviour
         gamePaused = false;
     }
 
+    // Pauses game
     void pause()
     {
         debugOverlay.SetActive(false);
