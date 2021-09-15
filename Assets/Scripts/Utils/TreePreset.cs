@@ -5,6 +5,8 @@
     {
         private static int idCount = 0;
 
+        public string basedOn;
+
         public int id;
 
         public string name;
@@ -47,6 +49,7 @@
             float[] nCurveV, float[] nDownAngle, float[] nDownAngleV, float[] nRotate, float[] nRotateV,
             int[] nBranches)
         {
+            this.basedOn = null;
             this.id = idCount++;
             this.name = name;
             this.shape = shape;

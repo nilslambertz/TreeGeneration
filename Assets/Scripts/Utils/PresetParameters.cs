@@ -169,6 +169,7 @@ namespace DefaultNamespace
         public static void createCustomTreePreset()
         {
             TreePreset custom = SharedValues.getCurrentPreset().getCopy("Preset #" + (customPresetId++));
+            custom.basedOn = SharedValues.getCurrentPreset().name;
 
             presetList.Add(custom);
 
