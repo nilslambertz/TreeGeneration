@@ -27,5 +27,12 @@ namespace DefaultNamespace
                 uiDisplay.addNumber(e, number);
             }
         }
+        public static void subtractNumber(UIDisplay.uiTextsEnum e, int number)
+        {
+            if (uiDisplay != null)
+            {
+                uiDisplay.subtractNumber(e, number);
+            }
+        }
     }
 }

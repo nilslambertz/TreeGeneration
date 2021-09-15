@@ -86,5 +86,11 @@ namespace DefaultNamespace
             uiNumbers[(int)e] += number;
             changed = true;
         }
+
+        public void subtractNumber(uiTextsEnum e, int number)
+        {
+            uiNumbers[(int)e] -= number;
+            changed = true;
+        }
     }
 }

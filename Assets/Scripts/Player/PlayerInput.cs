@@ -49,6 +49,8 @@ namespace DefaultNamespace
                         treeInFocus = null;
                         treeInFocusColor = Color.black;
                     }
+                    UIController.setNumber(UIDisplay.uiTextsEnum.NumberOfTrees, 0);
+                    UIController.setNumber(UIDisplay.uiTextsEnum.NumberOfObjects, 0);
                     GeneratorScript.clearTreeList();
                 }
                 else if (Physics.Raycast(position.position, position.forward, out var hitTree, Mathf.Infinity, treeMask))
@@ -58,8 +60,18 @@ namespace DefaultNamespace
                     GameObject newTreeInFocus = hitTree.collider.gameObject;
                     if (Input.GetKeyDown(KeyCode.Delete))
                     {
+                        int childCount = 0;
                         Destroy(newTreeInFocus);
+                        for (int i = 0; i < newTreeInFocus.transform.childCount; i++)
+                        {
+                            Transform child = newTreeInFocus.transform.GetChild(i);
+                            childCount++;
+                            childCount += child.childCount;
+                        }
                         treeInFocus = null;
+                        treeInFocusColor = Color.black;
+                        UIController.subtractNumber(UIDisplay.uiTextsEnum.NumberOfTrees, 1);
+                        UIController.subtractNumber(UIDisplay.uiTextsEnum.NumberOfObjects, childCount);
                     }
                     else
                     {
