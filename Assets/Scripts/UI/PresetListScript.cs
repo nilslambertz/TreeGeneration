@@ -8,7 +8,7 @@ namespace DefaultNamespace
 {
     public class PresetListScript : MonoBehaviour
     {
-        public GameObject buttonTemplate;
+        public GameObject buttonTemplate; // Button prefab
 
         public GameObject parameterListPanel;
 
@@ -16,7 +16,7 @@ namespace DefaultNamespace
 
         public GameObject addButtonTemplate;
 
-        private static PresetParameters.PresetParameterInfo[] presetParameterList;
+        private static PresetParameters.PresetParameterInfo[] presetParameterList; // list of parameters
 
         void Start()
         {
@@ -24,6 +24,7 @@ namespace DefaultNamespace
             updateList();
         }
 
+        // Updates preset-list in menu
         void updateList()
         {
             foreach (Transform child in this.transform)
@@ -37,6 +38,8 @@ namespace DefaultNamespace
             {
                 currentButton = Instantiate(buttonTemplate, this.transform);
                 string buttonText = preset.name;
+
+                // If current preset, highlight it
                 if (SharedValues.getCurrentPreset().id == preset.id)
                 {
                     currentButton.transform.GetChild(0).GetComponent<Text>().fontStyle = FontStyle.Bold;
@@ -50,16 +53,17 @@ namespace DefaultNamespace
                 currentButton.SetActive(true);
             }
 
+            // Create add-preset-button
             currentButton = Instantiate(addButtonTemplate, this.transform);
             currentButton.GetComponent<Button>().onClick.AddListener(delegate ()
                 {
                     createNewPreset();
-                    updateList();
                 });
 
             updateParameterList();
         }
 
+        // updates parameter-list
         void updateParameterList()
         {
             foreach (Transform child in parameterListPanel.transform)
@@ -78,7 +82,7 @@ namespace DefaultNamespace
                 currentParameter.transform.Find("Title").GetComponent<Text>().text = p.name;
                 currentParameter.transform.Find("Description").GetComponent<Text>().text = p.description;
 
-                currentParameter.transform.Find("Dropdown").GetComponent<Dropdown>().gameObject.SetActive(false);
+                // Set slider values
                 currentParameter.transform.Find("Slider").GetComponent<Slider>().gameObject.SetActive(false);
                 currentParameter.transform.Find("Slider").GetComponent<Slider>().gameObject.SetActive(true);
                 Slider slider = currentParameter.transform.Find("Slider").GetComponent<Slider>();
@@ -93,21 +97,18 @@ namespace DefaultNamespace
             }
         }
 
-        void test(int i)
-        {
-            print(i);
-        }
-
-
+        // Change current preset and update List
         void buttonClicked(int id)
         {
             SharedValues.setPreset(id);
             updateList();
         }
 
+        // Creates new preset
         void createNewPreset()
         {
             PresetParameters.createCustomTreePreset();
+            updateList();
         }
     }
 }

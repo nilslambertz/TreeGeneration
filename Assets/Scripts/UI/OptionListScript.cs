@@ -14,6 +14,7 @@ namespace DefaultNamespace
 
         private static OptionElementInfo[] optionList;
 
+        // Options-Enum
         public enum OptionElement
         {
             showDebug,
@@ -22,6 +23,7 @@ namespace DefaultNamespace
             randomColors
         }
 
+        // Options-Element with name, description and value
         public struct OptionElementInfo
         {
             public OptionElementInfo(string n, string d, bool v)
@@ -39,6 +41,7 @@ namespace DefaultNamespace
             }
         }
 
+        // Generates option-list
         private static void generateOptionList()
         {
             optionList = new OptionElementInfo[4];
@@ -48,6 +51,7 @@ namespace DefaultNamespace
             optionList[(int)OptionElement.randomColors] = new OptionElementInfo("Random colors", "Spawn trees with random colors for each branch", false);
         }
 
+        // Returns option from enum
         public static OptionElementInfo getOption(OptionElement o)
         {
             if (optionList == null)
@@ -63,6 +67,7 @@ namespace DefaultNamespace
             updateOptionsList();
         }
 
+        // Updates the option-list in the menu with the correct values
         void updateOptionsList()
         {
             foreach (Transform child in optionListPanel.transform)
