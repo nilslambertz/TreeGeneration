@@ -81,7 +81,6 @@ public class GeneratorScript : MonoBehaviour
             // Next iteration of the algorithm, starting with the child-object
             if (curvedBranches)
             {
-                Vector3 downangle_stem = startPosition;
                 childs = weberIterationCurved(
                i,
                stemObject,
@@ -94,7 +93,7 @@ public class GeneratorScript : MonoBehaviour
                length_base,
                length_trunk,
                angle,
-               downangle_stem,
+               startPosition,
                start);
             }
             else
@@ -111,6 +110,7 @@ public class GeneratorScript : MonoBehaviour
                 length_base,
                 length_trunk,
                 angle,
+                startPosition,
                 start);
             }
 
@@ -154,6 +154,7 @@ public class GeneratorScript : MonoBehaviour
         float length_base,
         float length_parent,
         float rotateAngle,
+        Vector3 downangle_parent,
         float offset)
     {
         int objectCount = 0;
@@ -165,14 +166,14 @@ public class GeneratorScript : MonoBehaviour
         if (treePreset.nDownAngleV[depth] >= 0)
         {
             var angle = HelperFunctions.getDownAnglePositive(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth]);
-            downangle_current = new Vector3(0, rotateAngle, angle);
+            downangle_current = new Vector3(0, rotateAngle, (0.5f * angle)) + downangle_parent;
         }
         else
         {
             var angle = HelperFunctions.getDownAngleNegative(treePreset.nDownAngle[depth], treePreset.nDownAngleV[depth], length_parent, offset,
                 length_base);
 
-            downangle_current = new Vector3(0, rotateAngle, angle);
+            downangle_current = new Vector3(0, rotateAngle, angle) + downangle_parent;
         }
 
         var branchObject = ConeGenerator.getCone(currentRadius, topRadius, currentLength, startPosition,
@@ -217,6 +218,7 @@ public class GeneratorScript : MonoBehaviour
                     length_base,
                     currentLength,
                     angle,
+                    downangle_current,
                     offset + start);
 
                 list.AddRange(childs);
