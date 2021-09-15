@@ -121,8 +121,8 @@ public class GeneratorScript : MonoBehaviour
 
         objectCount = list.Count;
 
-        UIController.addNumber(UIDisplay.uiTextsEnum.NumberOfObjects, objectCount);
-        UIController.addNumber(UIDisplay.uiTextsEnum.NumberOfTrees, 1);
+        UIController.addValue(UIDisplay.UIDebugTextEnum.NumberOfObjects, objectCount);
+        UIController.addValue(UIDisplay.UIDebugTextEnum.NumberOfTrees, 1);
 
         return list;
     }

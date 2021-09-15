@@ -56,8 +56,8 @@ namespace DefaultNamespace
                         treeInFocus = null;
                         treeInFocusColor = Color.black;
                     }
-                    UIController.setNumber(UIDisplay.uiTextsEnum.NumberOfTrees, 0);
-                    UIController.setNumber(UIDisplay.uiTextsEnum.NumberOfObjects, 0);
+                    UIController.setValue(UIDisplay.UIDebugTextEnum.NumberOfTrees, 0);
+                    UIController.setValue(UIDisplay.UIDebugTextEnum.NumberOfObjects, 0);
                     GeneratorScript.clearTreeList();
                 }
                 // Looking at a tree
@@ -85,8 +85,8 @@ namespace DefaultNamespace
                         }
                         treeInFocus = null;
                         treeInFocusColor = Color.black;
-                        UIController.subtractNumber(UIDisplay.uiTextsEnum.NumberOfTrees, 1);
-                        UIController.subtractNumber(UIDisplay.uiTextsEnum.NumberOfObjects, childCount);
+                        UIController.subtractValue(UIDisplay.UIDebugTextEnum.NumberOfTrees, 1);
+                        UIController.subtractValue(UIDisplay.UIDebugTextEnum.NumberOfObjects, childCount);
                     }
                     else
                     {
