@@ -33,7 +33,6 @@ namespace DefaultNamespace
         {
             var objectRenderer = tree.GetComponent<Renderer>();
             objectRenderer.material.SetColor("_Color", color);
-            print(color);
         }
 
         // Update is called once per frame
@@ -43,6 +42,8 @@ namespace DefaultNamespace
             {
                 if (Physics.Raycast(position.position, position.forward, out var hitTree, Mathf.Infinity, treeMask))
                 {
+                    circleHidden = true;
+                    circle.SetActive(false);
                     GameObject newTreeInFocus = hitTree.collider.gameObject;
                     if (Input.GetKeyDown(KeyCode.Delete))
                     {
