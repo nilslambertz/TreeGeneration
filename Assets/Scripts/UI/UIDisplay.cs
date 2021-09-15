@@ -132,27 +132,20 @@ namespace DefaultNamespace
         {
             if (changed)
             {
-                if (OptionListScript.getOption(OptionListScript.OptionElement.showDebug).value)
-                {
-                    updateUiText();
-                }
+                updateUiText();
                 changed = false;
             }
             bool newValue = OptionListScript.getOption(OptionListScript.OptionElement.showDebug).value;
             if (newValue != showDebug)
             {
                 showDebug = newValue;
-                overlay.gameObject.SetActive(showDebug);
+                uiText.gameObject.SetActive(showDebug);
             }
         }
 
         private void updateUiText()
         {
             string s = "";
-            /*for (int i = 0; i < uiLabels.Length; i++)
-            {
-                s += uiLabels[i] + " " + uiNumbers[i] + "\n";
-            }*/
             for (int i = 0; i < uIDebugTexts.Length; i++)
             {
                 s += uIDebugTexts[i].name + ": " + uIDebugTexts[i].getValue() + "\n";
