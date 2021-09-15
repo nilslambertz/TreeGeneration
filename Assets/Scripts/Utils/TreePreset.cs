@@ -1,6 +1,8 @@
-﻿namespace DefaultNamespace {
+﻿namespace DefaultNamespace
+{
 
-    public class TreePreset {
+    public class TreePreset
+    {
         private static int idCount = 0;
 
         public int id;
@@ -43,7 +45,8 @@
             float[] nLength, float[] nLengthV, float[] nTaper, int nBaseSplits, float[] nSegSplits,
             float[] nSplitAngle, float[] nSplitAngleV, float[] nCurveRes, float[] nCurve, float[] nCurveBack,
             float[] nCurveV, float[] nDownAngle, float[] nDownAngleV, float[] nRotate, float[] nRotateV,
-            int[] nBranches) {
+            int[] nBranches)
+        {
             this.id = idCount++;
             this.name = name;
             this.shape = shape;
@@ -76,6 +79,17 @@
             this.nRotate = nRotate;
             this.nRotateV = nRotateV;
             this.nBranches = nBranches;
+        }
+
+        public TreePreset getCopy(string newName)
+        {
+            return new TreePreset(newName, shape,
+            baseSize, scale, scaleV, zScale, zscaleV, levels, ratio,
+            ratioPower, lobes, lobeDepth, flare, zeroScale, zeroScaleV,
+            (float[])nLength.Clone(), (float[])nLengthV.Clone(), (float[])nTaper.Clone(), nBaseSplits, (float[])nSegSplits.Clone(),
+            (float[])nSplitAngle.Clone(), (float[])nSplitAngleV.Clone(), (float[])nCurveRes.Clone(), (float[])nCurve.Clone(), (float[])nCurveBack.Clone(),
+            (float[])nCurveV.Clone(), (float[])nDownAngle.Clone(), (float[])nDownAngleV.Clone(), (float[])nRotate.Clone(), (float[])nRotateV.Clone(),
+            (int[])nBranches.Clone());
         }
     }
 }
