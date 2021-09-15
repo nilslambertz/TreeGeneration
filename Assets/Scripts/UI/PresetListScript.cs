@@ -50,6 +50,10 @@ namespace DefaultNamespace
                 {
                     buttonClicked(preset.id);
                 });
+                if (preset.basedOn != null)
+                {
+                    currentButton.transform.GetChild(1).GetComponent<Text>().text = "based on " + preset.basedOn;
+                }
                 currentButton.SetActive(true);
             }
 
