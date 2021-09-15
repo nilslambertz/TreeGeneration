@@ -11,7 +11,8 @@ namespace DefaultNamespace
         public enum UIDebugTextEnum
         {
             NumberOfObjects,
-            NumberOfTrees
+            NumberOfTrees,
+            CurrentPreset
         };
         public enum UIDebugTextValue
         {
@@ -98,21 +99,11 @@ namespace DefaultNamespace
 
         private void generateUIDebugTexts()
         {
-            uIDebugTexts = new UIDebugText[2];
+            uIDebugTexts = new UIDebugText[3];
             uIDebugTexts[(int)UIDebugTextEnum.NumberOfTrees] = new UIDebugText("Number of trees", UIDebugTextValue.IntValue, 0);
             uIDebugTexts[(int)UIDebugTextEnum.NumberOfObjects] = new UIDebugText("Number of objects", UIDebugTextValue.IntValue, 0);
+            uIDebugTexts[(int)UIDebugTextEnum.CurrentPreset] = new UIDebugText("Current preset", UIDebugTextValue.StrValue, SharedValues.getCurrentPreset().name);
         }
-
-        private string[] uiLabels = {
-            "Number of objects:",
-            "Number of trees:"
-        };
-
-        private int[] uiNumbers = {
-            0,
-            0
-        };
-
         private bool changed = false;
 
         public Transform overlay;
