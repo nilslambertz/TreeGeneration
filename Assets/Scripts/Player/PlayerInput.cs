@@ -40,7 +40,18 @@ namespace DefaultNamespace
         {
             if (!PauseMenu.gamePaused)
             {
-                if (Physics.Raycast(position.position, position.forward, out var hitTree, Mathf.Infinity, treeMask))
+                if (Input.GetKeyDown(KeyCode.C))
+                {
+                    List<GameObject> gameObjectList = GeneratorScript.getTreeList();
+                    foreach (GameObject g in gameObjectList)
+                    {
+                        Destroy(g);
+                        treeInFocus = null;
+                        treeInFocusColor = Color.black;
+                    }
+                    GeneratorScript.clearTreeList();
+                }
+                else if (Physics.Raycast(position.position, position.forward, out var hitTree, Mathf.Infinity, treeMask))
                 {
                     circleHidden = true;
                     circle.SetActive(false);

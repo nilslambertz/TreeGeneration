@@ -17,6 +17,11 @@ public class GeneratorScript : MonoBehaviour
         return treeList;
     }
 
+    public static void clearTreeList()
+    {
+        treeList.Clear();
+    }
+
     private static bool randomColors;
 
     /// <summary>
